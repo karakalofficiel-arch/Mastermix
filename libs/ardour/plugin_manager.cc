@@ -2059,8 +2059,13 @@ PluginManager::vst3_refresh (bool cache_only)
 #ifdef __APPLE__
 	vst3_discover_from_path ("~/Library/Audio/Plug-Ins/VST3:/Library/Audio/Plug-Ins/VST3:/Network/Library/Audio/Plug-ins/VST3", cache_only);
 #elif defined PLATFORM_WINDOWS
+	/* MasterMix: also scan the per-user VST3 location, which is part of the
+	 * VST3 specification on Windows (%LOCALAPPDATA%\Programs\Common\VST3). */
 	std::string prog = PBD::get_win_special_folder_path (CSIDL_PROGRAM_FILES);
-	vst3_discover_from_path (Glib::build_filename (prog, "Common Files", "VST3"), cache_only);
+	std::string local = PBD::get_win_special_folder_path (CSIDL_LOCAL_APPDATA);
+	Searchpath vst3sp (Glib::build_filename (prog, "Common Files", "VST3"));
+	vst3sp += Searchpath (Glib::build_filename (local, "Programs", "Common", "VST3"));
+	vst3_discover_from_path (vst3sp.to_string (), cache_only);
 #else
 	vst3_discover_from_path ("~/.vst3:/usr/lib64/vst3:/usr/lib/vst3:/usr/local/lib64/vst3:/usr/local/lib/vst3", cache_only);
 #endif
