@@ -27,3 +27,10 @@ Ordre habituel : `setup-msys2.sh`, `build-portaudio-asio.sh`, `build.sh`, `packa
   français si `LANGUAGE`/`LANG` absents (`gtk2_ardour/bundle_env_mingw.cc`).
 - Au premier démarrage d'une session, Windows peut afficher l'avertissement
   MMCSS (limite de 32 threads) : message standard d'Ardour, sans effet bloquant.
+
+## Problèmes connus
+
+- Tests unitaires upstream (`./waf configure --test`) : `libs/pbd/test/windows_timer_utils_test.cc`
+  ne compile pas sous MinGW (`'PBD::QPC' has not been declared`, code de test
+  Ardour obsolète côté Windows). Le reste de l'arbre de test compile. Non
+  corrigé en phase 1 : état identique à Ardour 9.8 upstream sur Windows.

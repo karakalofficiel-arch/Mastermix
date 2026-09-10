@@ -1153,7 +1153,7 @@ Copy the three screenshots to the user with SendUserFile at the end of the plan.
 
 **Files:** none new. Uses `--test --run-tests` waf options.
 
-- [ ] **Step 1: Reconfigure with tests in a separate build dir**
+- [x] **Step 1: Reconfigure with tests in a separate build dir** — libpbd-tests fails to compile upstream (`PBD::QPC` undeclared in `windows_timer_utils_test.cc`); recorded in tools/mastermix/README.md, not patched.
 
 Run:
 ```
@@ -1161,7 +1161,7 @@ MSYSTEM=MINGW64 CHERE_INVOKING=1 /c/msys64/usr/bin/bash.exe -lc 'PYTHON=/mingw64
 ```
 Expected: `libs/pbd` and `libs/ardour` test runners report `OK (N tests)`. If the test targets fail to *compile* under MinGW, record the exact error in `tools/mastermix/README.md` under a "Known issues" heading and continue; do not patch test code in phase 1.
 
-- [ ] **Step 2: Commit README note if needed**
+- [x] **Step 2: Commit README note if needed**
 
 ```bash
 git add tools/mastermix/README.md
