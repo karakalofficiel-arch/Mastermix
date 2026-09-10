@@ -67,7 +67,7 @@ def test_splash_is_black_with_green_title(tmp_path):
     im = Image.open(tmp_path / "r" / "MasterMix-splash.png").convert("RGB")
     assert im.getpixel((5, 5)) == (10, 10, 10)
     greens = sum(
-        1 for x in range(0, 400, 4) for y in range(225, 285, 4)
+        1 for x in range(0, 400, 4) for y in range(240, 300, 4)
         if (lambda p: p[1] > 150 and p[1] > p[0] and p[1] > p[2])(im.getpixel((x, y)))
     )
     assert greens > 40, "title text should be rendered in apple green"

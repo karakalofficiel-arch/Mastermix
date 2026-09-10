@@ -44,8 +44,6 @@ ICON_SIZES = (16, 22, 32, 48, 256, 512)
 ICO_SIZES = [(16, 16), (32, 32), (48, 48), (256, 256)]
 SPLASH_SIZE = (400, 348)
 SMALL_SPLASH_SIZE = (100, 87)
-SUBTITLE = "basé sur Ardour 9.8"
-GREY = "#8A8A8A"
 
 DEFAULT_RES = ROOT / "gtk2_ardour" / "resources"
 DEFAULT_ICONS = ROOT / "gtk2_ardour" / "icons"
@@ -79,8 +77,7 @@ def make_splash():
     mark = svg_to_image(logo.build_svg("mono"), logo_px)
     img.alpha_composite(mark, ((width - logo_px) // 2, 28))
     draw = ImageDraw.Draw(img)
-    _centred_text(draw, "MASTERMIX", _font(44), 228, width, logo.GREEN)
-    _centred_text(draw, SUBTITLE, _font(15), 296, width, GREY)
+    _centred_text(draw, "MASTERMIX", _font(44), 244, width, logo.GREEN)
     return img
 
 

@@ -142,8 +142,8 @@ Règles d'application :
 - Variantes : `logo-mono.svg` (M vert sur fond transparent, pour splash),
   `logo-black.svg` (M noir sur transparent, pour impression).
 - Splash `MasterMix-splash.png` 400×348 : fond noir, logo centré, texte
-  « MasterMix » en Ubuntu/DejaVu Sans Bold vert pomme, sous-titre
-  « basé sur Ardour 9.8 » gris.
+  « MASTERMIX » en gras vert pomme. Aucune mention d'Ardour au démarrage
+  (demande utilisateur) ; l'attribution GPL reste dans À propos et README.
 - Rendu : `mastermix-branding/render.py` (Python 3.12 + `cairosvg` +
   `Pillow`) produit tous les PNG, l'`.ico` multi-résolution (16, 32, 48,
   256) et les deux splashs. Idempotent, lancé à la main.
