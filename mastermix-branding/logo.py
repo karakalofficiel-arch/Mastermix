@@ -28,27 +28,39 @@ GREEN_LIGHT = "#C6F04A"
 GREEN_DARK = "#7FAE00"
 BLACK = "#0A0A0A"
 
-# Solid "M" silhouette, left to right: base-left, peak-left, valley, peak-right, base-right.
-M_POINTS = [(40, 440), (150, 72), (256, 236), (362, 72), (472, 440)]
+# Bold "M" outline, clockwise from the bottom-left outer corner.  Legs splay
+# outward like the sides of Ardour's triangle; the central V opens the counter
+# from the top and its lower vertex sits exactly on BODY_BOTTOM so the waveform
+# only bites into the two legs.
+M_POINTS = [
+    (40, 460), (110, 72), (200, 72), (256, 230), (312, 72), (402, 72),
+    (472, 460), (392, 460), (329, 113), (256, 320), (183, 113), (120, 460),
+]
 
-BODY_BOTTOM = 300        # y where the solid body ends; spikes hang below it
-SPIKE_COUNT = 13
-SPIKE_MAX_DEPTH = 140    # deepest spike, in px below BODY_BOTTOM
+BODY_BOTTOM = 320        # y where the solid body ends; spikes hang below it
+SPIKE_COUNT = 21
+SPIKE_MAX_DEPTH = 130    # deepest spike, in px below BODY_BOTTOM
 SPIKE_X0 = 40            # spikes span the width of the M base
 SPIKE_X1 = 472
+LEG_CENTRES = (80, 432)  # x of each leg's centre at the base
+LEG_SIGMA = 1.8          # bell width of the spike profile, in spikes
 
 VARIANTS = ("icon", "mono", "black")
 
 
 def spike_depths(count=SPIKE_COUNT, max_depth=SPIKE_MAX_DEPTH):
-    """Depth of each spike, bell-shaped and alternating long/short like a waveform."""
-    centre = (count - 1) / 2
-    sigma = count / 3.2
+    """Depth of each spike: one bell under each leg, alternating long/short
+    like a waveform, and symmetric about the centre."""
+    span = (SPIKE_X1 - SPIKE_X0) / count
+    centres = [(x - SPIKE_X0) / span - 0.5 for x in LEG_CENTRES]
     depths = []
     for i in range(count):
-        bell = math.exp(-((i - centre) / sigma) ** 2)
-        wobble = 0.85 if i % 2 else 1.0
+        bell = max(math.exp(-((i - c) / LEG_SIGMA) ** 2) for c in centres)
+        wobble = 0.8 if i % 2 else 1.0
         depths.append(round(max_depth * bell * wobble, 1))
+    # enforce exact mirror symmetry despite floating point
+    for i in range(count // 2):
+        depths[count - 1 - i] = depths[i]
     return depths
 
 

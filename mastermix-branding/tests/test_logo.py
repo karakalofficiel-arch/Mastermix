@@ -44,22 +44,25 @@ def test_black_variant_uses_flat_black_fill():
     assert "linearGradient" not in svg
 
 
-def test_spikes_are_symmetric_and_tallest_in_middle():
+def test_spikes_are_symmetric_and_deepest_under_the_legs():
     d = logo.spike_depths()
     assert len(d) == logo.SPIKE_COUNT
     assert d == d[::-1]
-    assert max(d) == d[len(d) // 2]
-    assert min(d) > 0
+    assert d.index(max(d)) < len(d) // 4          # deepest under the left leg
+    assert d[len(d) // 2] < 0.1 * max(d)         # almost nothing under the counter
+    assert min(d) >= 0
 
 
-def test_m_silhouette_has_two_peaks_and_central_valley():
-    xs, ys = zip(*logo.M_POINTS)
-    assert len(logo.M_POINTS) == 5
-    assert ys[1] == ys[3] == min(ys)          # two peaks at the top
-    assert ys[1] < ys[2] < ys[0]              # valley between peaks, above the base
-    assert ys[0] == ys[4] == max(ys)          # flat base
-    assert xs == tuple(sorted(xs))            # left to right
-    assert xs[0] + xs[4] == logo.SIZE         # horizontally centred
+def test_m_outline_is_mirror_symmetric_with_open_counter():
+    pts = logo.M_POINTS
+    assert len(pts) == 12
+    mirrored = {(logo.SIZE - x, y) for x, y in pts}
+    assert set(pts) == mirrored                          # symmetric about the centre
+    xs, ys = zip(*pts)
+    assert ys.count(min(ys)) == 4                        # four top corners
+    assert ys.count(max(ys)) == 4                        # four base corners
+    assert (256, 320) in pts and (256, 230) in pts       # V lower and upper vertex
+    assert 320 == logo.BODY_BOTTOM                       # counter ends where spikes start
 
 
 def test_wave_path_is_closed_and_uses_cubics():
