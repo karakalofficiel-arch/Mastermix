@@ -975,7 +975,8 @@ ARDOUR::setup_fpu ()
 */
 
 
-#if defined(PLATFORM_WINDOWS) || defined(__APPLE__)
+/* MasterMix: translations are on by default on Windows too (French UI). */
+#if defined(__APPLE__)
 static const bool translate_by_default = false;
 #else
 static const bool translate_by_default = true;

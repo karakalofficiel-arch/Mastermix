@@ -65,6 +65,13 @@ fixup_bundle_environment (int, char* [], string & localedir)
 	std::string path;
 
 	if (ARDOUR::translations_are_enabled ()) {
+		/* MasterMix ships with French as its default language. gettext on
+		 * Windows honours LANGUAGE/LANG, so only set it when the user has not
+		 * expressed a preference (LANGUAGE=en restores English). */
+		if (!Glib::getenv ("LANGUAGE").length () && !Glib::getenv ("LANG").length ()) {
+			Glib::setenv ("LANGUAGE", "fr", true);
+		}
+
 		path = windows_search_path().to_string();
 		path += "\\locale";
 		Glib::setenv ("GTK_LOCALEDIR", path, true);
