@@ -162,8 +162,12 @@ Règles d'application :
                   --optimize --prefix=/mingw64 --dist-target=mingw
   ./waf build -j$(nproc)
   ```
-  Backends : PortAudio (WASAPI/ASIO via portaudio MSYS2, ASIO SDK non
-  inclus donc WASAPI/WDM-KS), Dummy, JACK.
+  Backends : PortAudio (ASIO, WASAPI, WDM-KS, DirectSound, MME), Dummy, JACK.
+  Le PortAudio de MSYS2 n'a pas ASIO ; `tools/mastermix/build-portaudio-asio.sh`
+  télécharge le SDK ASIO Steinberg (licence acceptée par la personne qui
+  construit, SDK jamais commité) et compile un PortAudio statique dans
+  `build/deps/prefix`, que `build.sh` utilise automatiquement
+  (`--also-include`, `--also-libdir`, `PKG_CONFIG_PATH`).
 - Patches de build éventuels : un fichier par patch dans
   `tools/mastermix/patches/`, appliqués en commits distincts sur la branche.
 - Sortie : `build/gtk2_ardour/ardour-9.8.0.exe` (waf nomme toujours le
@@ -193,5 +197,4 @@ Règles d'application :
 - Thème clair, autres variantes de couleurs.
 - Signature Authenticode du binaire (certificat requis).
 - Site web, mises à jour automatiques, télémétrie.
-- Support ASIO natif (SDK Steinberg propriétaire).
 - Build 32 bits, macOS, Linux.

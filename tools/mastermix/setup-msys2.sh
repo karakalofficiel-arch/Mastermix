@@ -17,7 +17,7 @@ P=mingw-w64-x86_64
 MSYS_PKGS=(base-devel git)
 
 MINGW_PKGS=(
-	$P-gcc $P-binutils $P-make $P-gdb $P-pkgconf $P-python $P-ntldd $P-nsis
+	$P-gcc $P-binutils $P-make $P-gdb $P-pkgconf $P-cmake $P-ninja $P-python $P-ntldd $P-nsis
 	$P-boost $P-glib2 $P-glibmm $P-libsigc++ $P-libxml2
 	$P-cairo $P-cairomm $P-pango $P-pangomm $P-fontconfig $P-libpng $P-gdk-pixbuf2
 	$P-libsndfile $P-flac $P-libogg $P-libsamplerate $P-soundtouch $P-rubberband $P-aubio $P-fftw

@@ -32,6 +32,16 @@ CONFIGURE_FLAGS=(
 	--prefix=/mingw64
 )
 
+# PortAudio with ASIO (built by tools/mastermix/build-portaudio-asio.sh) takes
+# precedence over the MSYS2 package when present.
+DEPS_PREFIX=$PWD/build/deps/prefix
+if [ -f "$DEPS_PREFIX/include/pa_asio.h" ]; then
+	echo "using PortAudio+ASIO from $DEPS_PREFIX"
+	export PKG_CONFIG_PATH="$DEPS_PREFIX/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+	export LINKFLAGS="-L$DEPS_PREFIX/lib ${LINKFLAGS:-}"
+	CONFIGURE_FLAGS+=(--also-include="$DEPS_PREFIX/include" --also-libdir="$DEPS_PREFIX/lib")
+fi
+
 case "${1:-build}" in
 	clean)
 		$PYTHON ./waf clean
