@@ -19,6 +19,8 @@ import pytest
 
 import logo
 
+NS = "{http://www.w3.org/2000/svg}"
+
 
 def test_every_variant_is_valid_svg():
     for variant in ("icon", "mono", "black"):
@@ -33,40 +35,42 @@ def test_unknown_variant_rejected():
 
 
 def test_icon_has_black_square_and_mono_does_not():
-    assert "<rect" in logo.build_svg("icon")
-    assert "<rect" not in logo.build_svg("mono")
-    assert "<rect" not in logo.build_svg("black")
+    icon = ET.fromstring(logo.build_svg("icon"))
+    mono = ET.fromstring(logo.build_svg("mono"))
+    full = [r for r in icon.iter(NS + "rect") if r.get("width") == str(logo.SIZE)]
+    assert len(full) == 1 and full[0].get("fill") == logo.BLACK
+    assert not [r for r in mono.iter(NS + "rect") if r.get("width") == str(logo.SIZE)]
 
 
 def test_black_variant_uses_flat_black_fill():
     svg = logo.build_svg("black")
-    assert 'fill="#0A0A0A"' in svg
     assert "linearGradient" not in svg
+    assert 'stroke="#0A0A0A"' in svg
 
 
-def test_spikes_are_symmetric_and_deepest_under_the_legs():
-    d = logo.spike_depths()
-    assert len(d) == logo.SPIKE_COUNT
-    assert d == d[::-1]
-    assert d.index(max(d)) < len(d) // 4          # deepest under the left leg
-    assert d[len(d) // 2] < 0.1 * max(d)         # almost nothing under the counter
-    assert min(d) >= 0
+def test_legs_are_mirror_symmetric():
+    (x1, y1, w1, h1, r1), (x2, y2, w2, h2, r2) = logo.LEGS
+    assert (y1, w1, h1, r1) == (y2, w2, h2, r2)
+    assert x1 + x2 + w1 == logo.SIZE                 # symmetric about the centre
 
 
-def test_m_outline_is_mirror_symmetric_with_open_counter():
-    pts = logo.M_POINTS
-    assert len(pts) == 12
-    mirrored = {(logo.SIZE - x, y) for x, y in pts}
-    assert set(pts) == mirrored                          # symmetric about the centre
-    xs, ys = zip(*pts)
-    assert ys.count(min(ys)) == 4                        # four top corners
-    assert ys.count(max(ys)) == 4                        # four base corners
-    assert (256, 320) in pts and (256, 230) in pts       # V lower and upper vertex
-    assert 320 == logo.BODY_BOTTOM                       # counter ends where spikes start
+def test_v_is_centred_and_touches_both_legs():
+    (ax, ay), (mx, my), (bx, by) = logo.V_POINTS
+    assert mx == logo.SIZE // 2 and ay == by
+    assert my > ay                                   # vertex below the arms
+    assert ax + bx == logo.SIZE
+    left_leg, right_leg = logo.LEGS
+    assert ax <= left_leg[0] + left_leg[2]           # arm starts inside the left leg
+    assert bx >= right_leg[0]                        # and ends inside the right leg
 
 
-def test_wave_path_is_closed_and_uses_cubics():
-    path = logo.wave_path()
-    assert path.startswith("M 0 0")
-    assert path.rstrip().endswith("Z")
-    assert path.count(" C ") == 2 * logo.SPIKE_COUNT
+def test_two_fader_caps_at_different_heights_over_each_leg():
+    assert len(logo.CAPS) == 2
+    (cx1, cy1, cw1, _, _), (cx2, cy2, cw2, _, _) = logo.CAPS
+    assert cy1 != cy2
+    left_leg, right_leg = logo.LEGS
+    assert cx1 < left_leg[0] and cx1 + cw1 > left_leg[0] + left_leg[2]   # cap overhangs the leg
+    assert cx2 < right_leg[0] and cx2 + cw2 > right_leg[0] + right_leg[2]
+    icon = ET.fromstring(logo.build_svg("icon"))
+    caps = [r for r in icon.iter(NS + "rect") if r.get("fill") == logo.BLACK and r.get("rx") == "7"]
+    assert len(caps) == 2

@@ -15,78 +15,33 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 """Geometry of the MasterMix logo, emitted as SVG.
 
-The logo mirrors Ardour's: a solid glyph whose lower edge is eaten by an
-audio-waveform envelope (a row of rounded spikes pointing down, deepest in
-the middle).  Ardour uses a triangle for the "A"; MasterMix uses a solid
-two-peak silhouette for the "M".
+Direction "Faders": a bold M whose two legs are mixer channel strips,
+each carrying a fader cap at a different position, and whose central V is
+a single mitred stroke. Apple green on black.
 """
-import math
 
 SIZE = 512
 GREEN = "#A4DE02"
 GREEN_LIGHT = "#C6F04A"
-GREEN_DARK = "#7FAE00"
+GREEN_DARK = "#8FC400"
 BLACK = "#0A0A0A"
+CAP_LINE = "#E8FFB0"
 
-# Bold "M" outline, clockwise from the bottom-left outer corner.  Legs splay
-# outward like the sides of Ardour's triangle; the central V opens the counter
-# from the top and its lower vertex sits exactly on BODY_BOTTOM so the waveform
-# only bites into the two legs.
-M_POINTS = [
-    (40, 460), (110, 72), (200, 72), (256, 230), (312, 72), (402, 72),
-    (472, 460), (392, 460), (329, 113), (256, 320), (183, 113), (120, 460),
-]
-
-BODY_BOTTOM = 320        # y where the solid body ends; spikes hang below it
-SPIKE_COUNT = 21
-SPIKE_MAX_DEPTH = 130    # deepest spike, in px below BODY_BOTTOM
-SPIKE_X0 = 40            # spikes span the width of the M base
-SPIKE_X1 = 472
-LEG_CENTRES = (80, 432)  # x of each leg's centre at the base
-LEG_SIGMA = 1.8          # bell width of the spike profile, in spikes
+# Legs: (x, y, width, height, corner radius)
+LEGS = [(88, 96, 80, 320, 14), (344, 96, 80, 320, 14)]
+# Central V as a stroked polyline (x, y points) and its stroke width
+V_POINTS = [(128, 120), (256, 300), (384, 120)]
+V_WIDTH = 80
+# Fader caps: (x, y, width, height, corner radius); the thin line sits inside
+CAPS = [(74, 292, 108, 30, 7), (330, 212, 108, 30, 7)]
+CAP_LINE_HEIGHT = 4
+CAP_LINE_OFFSET = 13
 
 VARIANTS = ("icon", "mono", "black")
 
 
-def spike_depths(count=SPIKE_COUNT, max_depth=SPIKE_MAX_DEPTH):
-    """Depth of each spike: one bell under each leg, alternating long/short
-    like a waveform, and symmetric about the centre."""
-    span = (SPIKE_X1 - SPIKE_X0) / count
-    centres = [(x - SPIKE_X0) / span - 0.5 for x in LEG_CENTRES]
-    depths = []
-    for i in range(count):
-        bell = max(math.exp(-((i - c) / LEG_SIGMA) ** 2) for c in centres)
-        wobble = 0.8 if i % 2 else 1.0
-        depths.append(round(max_depth * bell * wobble, 1))
-    # enforce exact mirror symmetry despite floating point
-    for i in range(count // 2):
-        depths[count - 1 - i] = depths[i]
-    return depths
-
-
-def wave_path(body_bottom=BODY_BOTTOM, x0=SPIKE_X0, x1=SPIKE_X1):
-    """Closed path of the region to KEEP: everything above the waveform edge.
-
-    Walks the bottom edge right-to-left; each spike is two cubic Béziers
-    (trough -> rounded tip -> trough)."""
-    depths = spike_depths()
-    n = len(depths)
-    span = (x1 - x0) / n
-    parts = [f"M 0 0 L {SIZE} 0 L {SIZE} {body_bottom} L {x1} {body_bottom}"]
-    for i in reversed(range(n)):
-        left = x0 + span * i
-        right = left + span
-        cx = (left + right) / 2
-        tip = body_bottom + depths[i]
-        shoulder = body_bottom + depths[i] * 0.55
-        parts.append(
-            f"C {right:.1f} {shoulder:.1f} {cx + span * 0.18:.1f} {tip:.1f} {cx:.1f} {tip:.1f}"
-        )
-        parts.append(
-            f"C {cx - span * 0.18:.1f} {tip:.1f} {left:.1f} {shoulder:.1f} {left:.1f} {body_bottom}"
-        )
-    parts.append(f"L 0 {body_bottom} Z")
-    return " ".join(parts)
+def _rect(x, y, w, h, rx, fill):
+    return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="{fill}"/>'
 
 
 def build_svg(variant="icon"):
@@ -94,19 +49,19 @@ def build_svg(variant="icon"):
 
     icon  : black rounded square + green gradient M (app icon)
     mono  : green gradient M on transparent background (splash)
-    black : flat black M on transparent background (print)
+    black : flat black M with white caps on transparent background (print)
     """
     if variant not in VARIANTS:
         raise ValueError(f"unknown variant {variant!r}, expected one of {VARIANTS}")
 
-    points = " ".join(f"{x},{y}" for x, y in M_POINTS)
     background = ""
     if variant == "icon":
-        background = f'<rect width="{SIZE}" height="{SIZE}" rx="92" fill="{BLACK}"/>'
+        background = f'<rect width="{SIZE}" height="{SIZE}" rx="112" fill="{BLACK}"/>'
 
     if variant == "black":
         gradient = ""
         fill = BLACK
+        cap_fill, line_fill = "#FFFFFF", BLACK
     else:
         gradient = (
             '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
@@ -115,12 +70,23 @@ def build_svg(variant="icon"):
             "</linearGradient>"
         )
         fill = "url(#g)"
+        cap_fill, line_fill = BLACK, CAP_LINE
+
+    points = " ".join(f"{x},{y}" for x, y in V_POINTS)
+    v = (f'<polyline points="{points}" fill="none" stroke="{fill}" '
+         f'stroke-width="{V_WIDTH}" stroke-linejoin="miter" stroke-miterlimit="4"/>')
+    legs = "".join(_rect(*leg, fill) for leg in LEGS)
+    caps = "".join(
+        _rect(x, y, w, h, rx, cap_fill)
+        + _rect(x, y + CAP_LINE_OFFSET, w, CAP_LINE_HEIGHT, 0, line_fill)
+        for x, y, w, h, rx in CAPS
+    )
 
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{SIZE}" height="{SIZE}" '
         f'viewBox="0 0 {SIZE} {SIZE}">\n'
-        f'<defs>{gradient}<clipPath id="wave"><path d="{wave_path()}"/></clipPath></defs>\n'
-        f'{background}<polygon points="{points}" fill="{fill}" clip-path="url(#wave)"/>\n'
+        f"<defs>{gradient}</defs>\n"
+        f"{background}{v}{legs}{caps}\n"
         "</svg>\n"
     )
