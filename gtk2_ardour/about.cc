@@ -651,7 +651,7 @@ About::About ()
 	set_comments (_("MasterMix is a derivative of the Ardour digital audio workstation.\n"
 	                "Ardour is a trademark of Paul Davis; MasterMix is not affiliated with the Ardour project."));
 	set_license (gpl);
-	set_name (X_("Ardour"));
+	set_name (X_(PROGRAM_NAME)); /* gtkmm2: AboutDialog::set_name() is the program name shown in the dialog */
 	set_website (X_("https://ardour.org/"));
 	set_website_label (_("Ardour manual and website"));
 	set_version ((string_compose(_("%1%2\n(rev %3)\n%4%5"),
