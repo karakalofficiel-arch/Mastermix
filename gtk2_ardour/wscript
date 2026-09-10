@@ -981,7 +981,17 @@ def build(bld):
     #
     # If you add or delete some ,bindings files, be sure to edit fmt_bindings too, or better yet,
     # hack fmt-bindings and this wscript file so that the list is defined here and passed in.
-    if sys.version_info[0] > 2:
+    if sys.platform == 'win32':
+        # cmd.exe chokes on the unescaped '<' in --winkey="Mod4><Super";
+        # run fmt-bindings.py without a shell and redirect stdout ourselves.
+        def a_rule(task, top_dir = bld.top_dir, winkey = bld.env['WINDOWS_KEY']):
+            import subprocess
+            with open(task.outputs[0].abspath(), 'wb') as out:
+                return subprocess.call([sys.executable, top_dir + '/tools/fmt-bindings.py',
+                                        '--platform=' + sys.platform, '--winkey=' + winkey,
+                                        '--accelmap', '1', task.inputs[0].abspath()],
+                                       stdout = out)
+    elif sys.version_info[0] > 2:
         a_rule = '%s %s/tools/fmt-bindings.py --platform="%s" --winkey="%s" --accelmap 1 ${SRC[0].abspath()} >${TGT}' % (sys.executable, bld.top_dir, sys.platform, bld.env['WINDOWS_KEY'])
     else:
         a_rule = 'perl %s/tools/fmt-bindings --platform="%s" --winkey="%s" --accelmap 1 ${SRC[0].abspath()} >${TGT}' % (bld.top_dir, sys.platform, bld.env['WINDOWS_KEY'] )
