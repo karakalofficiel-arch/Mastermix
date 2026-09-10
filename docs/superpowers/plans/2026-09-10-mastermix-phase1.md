@@ -60,7 +60,7 @@ Header to put at the top of every new Python file (Task 1, 2, 3):
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ```
 
-- [ ] **Step 1: Install Python deps and write `requirements.txt`**
+- [x] **Step 1: Install Python deps and write `requirements.txt`**
 
 `mastermix-branding/requirements.txt`:
 ```
@@ -71,7 +71,7 @@ pytest>=8
 Run: `python -m pip install -r mastermix-branding/requirements.txt`
 Expected: exit 0.
 
-- [ ] **Step 2: Write `conftest.py` so tests import `logo` without packaging**
+- [x] **Step 2: Write `conftest.py` so tests import `logo` without packaging**
 
 `mastermix-branding/tests/conftest.py`:
 ```python
@@ -83,7 +83,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 ```
 Create empty `mastermix-branding/__init__.py`.
 
-- [ ] **Step 3: Write the failing tests**
+- [x] **Step 3: Write the failing tests**
 
 `mastermix-branding/tests/test_logo.py`:
 ```python
@@ -143,12 +143,12 @@ def test_wave_path_is_closed_and_uses_cubics():
     assert path.count(" C ") == 2 * logo.SPIKE_COUNT
 ```
 
-- [ ] **Step 4: Run tests to verify they fail**
+- [x] **Step 4: Run tests to verify they fail**
 
 Run: `python -m pytest mastermix-branding/tests/test_logo.py -q`
 Expected: FAIL, `ModuleNotFoundError: No module named 'logo'`.
 
-- [ ] **Step 5: Write `logo.py`**
+- [x] **Step 5: Write `logo.py`**
 
 `mastermix-branding/logo.py`:
 ```python
@@ -254,12 +254,12 @@ def build_svg(variant="icon"):
     )
 ```
 
-- [ ] **Step 6: Run tests to verify they pass**
+- [x] **Step 6: Run tests to verify they pass**
 
 Run: `python -m pytest mastermix-branding/tests/test_logo.py -q`
 Expected: `8 passed`.
 
-- [ ] **Step 7: Write `README.md`**
+- [x] **Step 7: Write `README.md`**
 
 `README.md`:
 ```markdown
@@ -298,7 +298,7 @@ Branche `mastermix`, basée sur le tag Ardour `9.8`. Remote `upstream`
 des commits par-dessus le tag, pour rebaser sur les versions futures.
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add README.md mastermix-branding/
@@ -327,7 +327,7 @@ Prerequisite: `C:\msys64\mingw64\bin\libcairo-2.dll` must exist. Install it (ide
 MSYSTEM=MINGW64 CHERE_INVOKING=1 /c/msys64/usr/bin/bash.exe -lc 'pacman -S --needed --noconfirm mingw-w64-x86_64-cairo'
 ```
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `mastermix-branding/tests/test_render.py`:
 ```python
@@ -392,12 +392,12 @@ def test_splash_is_black_with_green_title(tmp_path):
     assert greens > 40, "title text should be rendered in apple green"
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `python -m pytest mastermix-branding/tests/test_render.py -q`
 Expected: `3 skipped` (module `render` missing). That counts as "failing" for this task: the module must exist and the tests must actually run.
 
-- [ ] **Step 3: Write `render.py`**
+- [x] **Step 3: Write `render.py`**
 
 `mastermix-branding/render.py`:
 ```python
@@ -515,17 +515,17 @@ if __name__ == "__main__":
     main()
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `python -m pytest mastermix-branding/tests -q`
 Expected: `11 passed`. If `test_render.py` is *skipped*, cairo is missing: run the pacman command in the prerequisite and retry. If `test_icon_centre_is_green...` fails on the pixel at (100, 200), open the PNG and adjust the sample point to a pixel inside the left leg; do not loosen the colour assertion.
 
-- [ ] **Step 5: Generate the real assets and inspect them**
+- [x] **Step 5: Generate the real assets and inspect them**
 
 Run: `python mastermix-branding/render.py`
 Expected: prints 12 paths. Then view `gtk2_ardour/resources/MasterMix-icon_256px.png` and `MasterMix-splash.png` (Read tool). Acceptance: the shape reads as an M with a waveform bottom edge like Ardour's triangle; text is centred and not clipped. If the M looks like two mountains, lower the valley (`M_POINTS[2]` y from 236 to ~300) and re-run Task 1 tests + this step.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add mastermix-branding/ gtk2_ardour/resources/MasterMix-* gtk2_ardour/icons/MasterMix.ico
@@ -550,7 +550,7 @@ Claude-Session: https://claude.ai/code/session_01FSZRwZ3gs21UbN1jYFNKGA"
 
 Background: the Ardour theme file has ~57 base colours and ~429 aliases that point at them. Recolouring the base colours retints the whole UI. Names must match upstream exactly (spaces included, e.g. `theme:contrasting clock`).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `mastermix-branding/tests/test_palette.py`:
 ```python
@@ -623,12 +623,12 @@ def test_accent_on_background_meets_aaa():
     assert palette.contrast_ratio("e8e8e8ff", "0a0a0aff") >= 7.0
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `python -m pytest mastermix-branding/tests/test_palette.py -q`
 Expected: FAIL, `ModuleNotFoundError: No module named 'palette'`.
 
-- [ ] **Step 3: Write `palette.py`**
+- [x] **Step 3: Write `palette.py`**
 
 `mastermix-branding/palette.py`:
 ```python
@@ -744,17 +744,17 @@ if __name__ == "__main__":
     print(TARGET.relative_to(ROOT))
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `python -m pytest mastermix-branding/tests/test_palette.py -q`
 Expected: `5 passed`. If `test_every_override_targets_an_existing_upstream_name` fails, fix the *key spelling* in `COLORS`/`ALIASES` to match upstream; never delete the override.
 
-- [ ] **Step 5: Generate the theme file**
+- [x] **Step 5: Generate the theme file**
 
 Run: `python mastermix-branding/palette.py`
 Expected: `gtk2_ardour/themes/dark-mastermix.colors` written; `git diff --no-index gtk2_ardour/themes/dark-ardour.colors gtk2_ardour/themes/dark-mastermix.colors | grep -c '^[-+]<' ` is roughly 60 (about 25 colours + 5 aliases, two lines each). Not more than 80.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add mastermix-branding/palette.py mastermix-branding/tests/test_palette.py gtk2_ardour/themes/dark-mastermix.colors
@@ -773,7 +773,7 @@ Claude-Session: https://claude.ai/code/session_01FSZRwZ3gs21UbN1jYFNKGA"
 
 **Interfaces:** none (UI text only).
 
-- [ ] **Step 1: Add the author**
+- [x] **Step 1: Add the author**
 
 In `gtk2_ardour/about.cc`, the array starts at line 131:
 ```cpp
@@ -787,7 +787,7 @@ static const char* authors[] = {
 	N_("Fons Adriaensen"),
 ```
 
-- [ ] **Step 2: Rewrite the copyright / comments block**
+- [x] **Step 2: Rewrite the copyright / comments block**
 
 Replace, near line 647:
 ```cpp
@@ -812,12 +812,12 @@ with:
 ```
 `set_name` stays: it is the GTK widget name used by the style engine, not a display string.
 
-- [ ] **Step 3: Verify it still parses (no build yet)**
+- [x] **Step 3: Verify it still parses (no build yet)**
 
 Run: `grep -n "Ahmed Hadjadj" gtk2_ardour/about.cc`
 Expected: two hits (authors array, copyright). Compilation is verified in Task 6.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add gtk2_ardour/about.cc
@@ -845,7 +845,7 @@ Shell-script header (use in every `tools/mastermix/*.sh`):
 # SPDX-License-Identifier: GPL-2.0-or-later
 ```
 
-- [ ] **Step 1: Write the script**
+- [x] **Step 1: Write the script**
 
 `tools/mastermix/setup-msys2.sh`:
 ```bash
@@ -908,7 +908,7 @@ exit $missing
 Tous les scripts s'exécutent depuis la racine du dépôt.
 ```
 
-- [ ] **Step 2: Run it**
+- [x] **Step 2: Run it**
 
 Run (from repo root, Git Bash):
 ```
@@ -917,7 +917,7 @@ MSYSTEM=MINGW64 CHERE_INVOKING=1 /c/msys64/usr/bin/bash.exe -lc 'tools/mastermix
 ```
 Expected: every module line prints `ok`, exit 0. Download is ~1.5 GB; allow 10-20 min. If a package name is not found, look it up with `pacman -Ss <name>` and fix the list (do not drop the dependency). If `glibmm-2.4` is missing but `glibmm-2.68` is present, the package `mingw-w64-x86_64-glibmm` is the 2.4 one; install it explicitly.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tools/mastermix/setup-msys2.sh tools/mastermix/README.md
@@ -939,7 +939,7 @@ Claude-Session: https://claude.ai/code/session_01FSZRwZ3gs21UbN1jYFNKGA"
 **Interfaces:**
 - Produces: `build/gtk2_ardour/mastermix-9.8.0.exe` (name may be `mastermix-9.8.exe`; check `ls build/gtk2_ardour/*.exe`), `build/libs/**/*.dll`, `build/gtk2_ardour/windows_icon.rc` referencing `icons/MasterMix.ico`.
 
-- [ ] **Step 1: Write `build.sh`**
+- [x] **Step 1: Write `build.sh`**
 
 `tools/mastermix/build.sh`:
 ```bash
@@ -996,7 +996,7 @@ echo "--- built:"
 ls -la build/gtk2_ardour/*.exe
 ```
 
-- [ ] **Step 2: Configure**
+- [x] **Step 2: Configure**
 
 Run:
 ```
@@ -1011,7 +1011,7 @@ Expected: `PROGRAM_NAME = 'MasterMix'` and `IDI_ICON1 ICON DISCARDABLE "icons/Ma
 
 If configure fails on a missing dependency, add the package to `setup-msys2.sh` (Task 5) and re-run. If it fails on a compiler/flag check, read `build/config.log` for the failing snippet before changing anything.
 
-- [ ] **Step 3: Build (long: 30-90 min)**
+- [x] **Step 3: Build (long: 30-90 min)**
 
 Run in the background with a 10-minute tool timeout, logging to a file:
 ```
@@ -1028,7 +1028,7 @@ For each compile error:
 
 Expected final state: `EXIT=0` in the log and `build/gtk2_ardour/mastermix-*.exe` present.
 
-- [ ] **Step 4: Sanity check the binary's branding**
+- [x] **Step 4: Sanity check the binary's branding**
 
 Run:
 ```
@@ -1036,7 +1036,7 @@ strings -el build/gtk2_ardour/mastermix-*.exe | grep -c MasterMix ; strings buil
 ```
 Expected: at least one non-zero count (the `PROGRAM_NAME` literal is compiled in).
 
-- [ ] **Step 5: Commit the build script (and `.gitkeep`)**
+- [x] **Step 5: Commit the build script (and `.gitkeep`)**
 
 ```bash
 git add tools/mastermix/build.sh tools/mastermix/patches/.gitkeep
@@ -1058,7 +1058,7 @@ Add `build-mastermix.log` to `.git/info/exclude` (not to `.gitignore`, to keep t
 **Interfaces:**
 - Consumes: Task 6 binary; Ardour's dev launcher `gtk2_ardour/ardev` (sets `ARDOUR_DATA_PATH`, `ARDOUR_CONFIG_PATH`, etc. so resources are found in-tree). Read `gtk2_ardour/ardev_common.sh.in` to see the variables.
 
-- [ ] **Step 1: Write `run-dev.sh`**
+- [x] **Step 1: Write `run-dev.sh`**
 
 `tools/mastermix/run-dev.sh`:
 ```bash
@@ -1076,7 +1076,7 @@ exec build/gtk2_ardour/mastermix-*.exe "$@"
 ```
 If `gtk2_ardour/ardev_common.sh` does not exist after the build, it is generated from `ardev_common.sh.in` by waf; check `build/gtk2_ardour/ardev_common.sh` and source that instead. If some DLL directory above does not exist, remove it from `PATH`; if the exe complains about a missing DLL, find it with `find build -name "<dll>"` and add its directory.
 
-- [ ] **Step 2: Launch and capture**
+- [x] **Step 2: Launch and capture**
 
 Run in the background (Git Bash), no arguments so the splash is shown:
 ```
@@ -1098,14 +1098,14 @@ Read the PNG. Acceptance:
 
 Then create a new session (`Alt+N` in the session dialog, name `Test`, default folder), open the mixer (`Alt+M`), capture again. Open Help → About, capture, check "Ahmed Hadjadj" and the Ardour attribution appear. Close MasterMix cleanly (`Ctrl+Q`, discard).
 
-- [ ] **Step 3: Fix what the screenshots reveal**
+- [x] **Step 3: Fix what the screenshots reveal**
 
 Typical issues and their fixes:
 - Splash not found (`Cannot find splash screen image file` on stderr): the resources dir is not on `ARDOUR_DATA_PATH`; check Step 1's sourcing of `ardev_common.sh`.
 - Theme not applied (grey UI): confirm `build/gtk2_ardour/../themes` contains `dark-mastermix.colors` and that `ARDOUR_CONFIG_PATH` doesn't point at an old `my-dark-*.colors`. Error text `no theme file was found; colors will be odd` means the search path is wrong.
 - Text unreadable somewhere: adjust the offending base colour in `palette.py` (Task 3), re-run `python mastermix-branding/palette.py`, commit as `fix(theme): ...`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add tools/mastermix/run-dev.sh
@@ -1183,7 +1183,7 @@ git commit -m "docs(msys2): record unit-test status under MinGW"
 
 Reference: `tools/x-win/package.sh` lines 120-260 list exactly which build artefacts are copied and where (`bin/`, `lib/ardour9/`, `share/ardour9/`). Mirror that layout but with `mastermix9` as the lowercase dirname, because `PROGRAM_NAME` changes `lwrcase_dirname` in `wscript` line 1666 (`'ardour' + MAJOR`) — check that line; if it hard-codes `ardour`, keep `ardour9` for the data dir (Ardour looks it up by that name) and only rename user-visible things.
 
-- [ ] **Step 1: Write `package-msys2.sh`**
+- [x] **Step 1: Write `package-msys2.sh`**
 
 ```bash
 #!/bin/bash
@@ -1264,7 +1264,7 @@ makensis -V2 dist/mastermix.nsi
 ls -la dist/*.exe
 ```
 
-- [ ] **Step 2: Write `mastermix.nsi.in`**
+- [x] **Step 2: Write `mastermix.nsi.in`**
 
 ```nsis
 ; Copyright (C) 2026 Ahmed Hadjadj
@@ -1334,7 +1334,7 @@ SectionEnd
 ```
 Note the `..\` paths: `makensis` runs on `dist/mastermix.nsi`, so includes are relative to `dist/`.
 
-- [ ] **Step 3: Run packaging**
+- [x] **Step 3: Run packaging**
 
 Run:
 ```
@@ -1342,15 +1342,15 @@ MSYSTEM=MINGW64 CHERE_INVOKING=1 /c/msys64/usr/bin/bash.exe -lc 'tools/mastermix
 ```
 Expected: `dist/MasterMix-9.8-Setup-x64.exe` exists, size 100-300 MB.
 
-- [ ] **Step 4: Verify the staged tree runs standalone**
+- [x] **Step 4: Verify the staged tree runs standalone**
 
 Run: `dist/MasterMix/bin/MasterMix.exe` from PowerShell (double-click equivalent, *not* from an MSYS2 shell so `PATH` has no `/mingw64/bin`). Expected: splash, then session dialog; no "DLL not found" dialog. If a DLL is missing, the `ntldd` step missed it: add it to the copy list explicitly (`cp /mingw64/bin/<dll> "$DEST/bin/"`). Capture a screenshot as in Task 7.
 
-- [ ] **Step 5: Install and uninstall test**
+- [ ] **Step 5: Install and uninstall test** — NOT RUN: the installer requires UAC elevation, which cannot be granted from this session. Left for the user.
 
 Run the installer silently: `dist/MasterMix-9.8-Setup-x64.exe /S` (needs admin; if UAC blocks, ask the user to run it). Expected: `C:\Program Files\MasterMix\bin\MasterMix.exe` exists and launches; then `"C:\Program Files\MasterMix\Uninstall.exe" /S` removes it.
 
-- [ ] **Step 6: Add `dist/` to `.git/info/exclude`, commit**
+- [x] **Step 6: Add `dist/` to `.git/info/exclude`, commit**
 
 ```bash
 echo dist/ >> .git/info/exclude
@@ -1365,20 +1365,20 @@ Claude-Session: https://claude.ai/code/session_01FSZRwZ3gs21UbN1jYFNKGA"
 
 ### Task 10: Final verification and hand-off
 
-- [ ] **Step 1: Run the whole Python test suite**
+- [x] **Step 1: Run the whole Python test suite**
 
 Run: `python -m pytest mastermix-branding/tests -q`
 Expected: all passed, 0 skipped.
 
-- [ ] **Step 2: Check the branch history**
+- [x] **Step 2: Check the branch history**
 
 Run: `git log --oneline 9.8..HEAD`
 Expected: one commit per task (plus `fix(mingw)` commits), all authored by Ahmed Hadjadj (`git log --format=%an 9.8..HEAD | sort -u`).
 
-- [ ] **Step 3: Walk the spec §8 checklist**
+- [x] **Step 3: Walk the spec §8 checklist**
 
 Tick each item of "8. Vérification" in the spec against evidence (screenshots, log lines). Anything not met is reported to the user explicitly, with the error text.
 
-- [ ] **Step 4: Send the user the screenshots and the installer path**
+- [x] **Step 4: Send the user the screenshots and the installer path**
 
 Use SendUserFile for the three screenshots from Task 7 and the Task 9 standalone screenshot. Report the path `dist/MasterMix-9.8-Setup-x64.exe`.
