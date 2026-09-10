@@ -1134,6 +1134,21 @@ Copy the three screenshots to the user with SendUserFile at the end of the plan.
 
 ---
 
+### Task 7 ter: ASIO support in the PortAudio backend (added 2026-09-10 on user request)
+
+**Files:**
+- Create: `tools/mastermix/build-portaudio-asio.sh` (downloads Steinberg ASIO SDK zip, clones PortAudio v19.7.0, cmake static build with `PA_USE_ASIO=ON`, installs to `build/deps/prefix`)
+- Modify: `tools/mastermix/build.sh` (uses that prefix via `PKG_CONFIG_PATH`, `LINKFLAGS=-L`, `--also-include`, `--also-libdir` when `pa_asio.h` exists)
+- Modify: `tools/mastermix/setup-msys2.sh` (adds `cmake`, `ninja`)
+
+- [x] Step 1: MSYS2 `libportaudio.dll` has WASAPI/WDM-KS but no `PaAsio_*` symbols.
+- [x] Step 2: build static PortAudio with ASIO; `nm libportaudio.a | grep PaAsio_ShowControlPanel` non-empty.
+- [x] Step 3: `waf configure` reports `Checking for header pa_asio.h : yes`.
+- [ ] Step 4: rebuilt `portaudio_callback_backend.dll` contains `PaAsio_`; the Audio/MIDI dialog lists ASIO under "Pilote".
+- [ ] Step 5: commit.
+
+---
+
 ### Task 8: Run the upstream unit tests under MinGW
 
 **Files:** none new. Uses `--test --run-tests` waf options.
