@@ -1118,6 +1118,22 @@ Copy the three screenshots to the user with SendUserFile at the end of the plan.
 
 ---
 
+### Task 7 bis: French UI by default (added 2026-09-10 on user request)
+
+**Files:**
+- Modify: `libs/ardour/globals.cc` (`translate_by_default`: true on Windows)
+- Modify: `gtk2_ardour/bundle_env_mingw.cc` (set `LANGUAGE=fr` when neither `LANGUAGE` nor `LANG` is set)
+- Modify: `tools/mastermix/package-msys2.sh` (run `waf i18n_mo` + `waf install --destdir=build/stage`, ship `share/ardour9/locale`)
+- Modify: `mastermix-branding/render.py` (no "basé sur Ardour" subtitle on the splash)
+
+- [x] Step 1: `waf i18n_mo` compiles `po/fr.mo` for gtk2_ardour, libardour, gtkmm2ext, ytk.
+- [x] Step 2: Windows locale dir is `<package dir>/share/ardour9/locale/<lang>/LC_MESSAGES/<domain>.mo`; in the dev tree the package dir is `build/gtk2_ardour`.
+- [x] Step 3: translations were off by default on Windows (`translate_by_default = false`); flip it.
+- [ ] Step 4: verify a French window title/labels in a screenshot (e.g. "Configuration Audio/MIDI").
+- [ ] Step 5: commit.
+
+---
+
 ### Task 8: Run the upstream unit tests under MinGW
 
 **Files:** none new. Uses `--test --run-tests` waf options.
