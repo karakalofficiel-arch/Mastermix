@@ -97,7 +97,7 @@ Palette :
 | Fond pistes (`theme:bg1`, `neutral:background`) | `#141414` |
 | Fond règles (`theme:bg2`, `neutral:backgroundest`) | `#000000` |
 | Widgets / boutons (`widget:bg`) | `#1E1E1E` |
-| Gris moyen (grilles) | `#3A3A3A` |
+| Gris moyen (grilles, texte des règles, `neutral:midground`) | `#5A5A5A` |
 | Texte principal | `#E8E8E8` |
 
 Règles d'application :
