@@ -53,7 +53,7 @@ case "${1:-build}" in
 	build)
 		# reconfigure when never configured, or when the waf lock points at
 		# another output dir (e.g. after a --out=build-tests test build)
-		if [ ! -f build/c4che/_cache.py ] || ! grep -q "out_dir = '$PWD/build'" .lock-waf_win32_build 2>/dev/null; then
+		if [ ! -f build/c4che/_cache.py ] || ! grep -q "out_dir = '$(cygpath -m "$PWD")/build'" .lock-waf_win32_build 2>/dev/null; then
 			$PYTHON ./waf configure "${CONFIGURE_FLAGS[@]}"
 		fi
 		;;
