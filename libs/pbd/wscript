@@ -180,6 +180,10 @@ def build(bld):
 
     if bld.env['build_target'] == 'x86_64':
         obj.defines += [ 'USE_X86_64_ASM' ]
+    if bld.env['build_target'] == 'mingw':
+        # GCC >= 12 ships _xgetbv() as an always_inline intrinsic that needs
+        # -mxsave; fpu.cc only calls it after checking OSXSAVE via cpuid.
+        obj.cxxflags = list(getattr(obj, 'cxxflags', [])) + [ '-mxsave' ]
     if bld.env['build_target'] == 'mingw' or bld.env['build_target'] == 'msvc':
         obj.defines += [ 'NO_POSIX_MEMALIGN' ]
         obj.source += [ 'windows_special_dirs.cc' ]
