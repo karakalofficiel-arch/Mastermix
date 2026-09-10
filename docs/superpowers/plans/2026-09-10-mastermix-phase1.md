@@ -1129,8 +1129,8 @@ Copy the three screenshots to the user with SendUserFile at the end of the plan.
 - [x] Step 1: `waf i18n_mo` compiles `po/fr.mo` for gtk2_ardour, libardour, gtkmm2ext, ytk.
 - [x] Step 2: Windows locale dir is `<package dir>/share/ardour9/locale/<lang>/LC_MESSAGES/<domain>.mo`; in the dev tree the package dir is `build/gtk2_ardour`.
 - [x] Step 3: translations were off by default on Windows (`translate_by_default = false`); flip it.
-- [ ] Step 4: verify a French window title/labels in a screenshot (e.g. "Configuration Audio/MIDI").
-- [ ] Step 5: commit.
+- [x] Step 4: verified: "Réglages audio / MIDI", editor and mixer in French.
+- [x] Step 5: committed (3e83a0e).
 
 ---
 
@@ -1144,8 +1144,8 @@ Copy the three screenshots to the user with SendUserFile at the end of the plan.
 - [x] Step 1: MSYS2 `libportaudio.dll` has WASAPI/WDM-KS but no `PaAsio_*` symbols.
 - [x] Step 2: build static PortAudio with ASIO; `nm libportaudio.a | grep PaAsio_ShowControlPanel` non-empty.
 - [x] Step 3: `waf configure` reports `Checking for header pa_asio.h : yes`.
-- [ ] Step 4: rebuilt `portaudio_callback_backend.dll` contains `PaAsio_`; the Audio/MIDI dialog lists ASIO under "Pilote".
-- [ ] Step 5: commit.
+- [x] Step 4: backend DLL contains `PaAsio_`; "Pilote" lists MME, DirectSound, ASIO, WASAPI, WDM-KS; ASIO devices: FL Studio ASIO, Generic Low Latency, Yamaha Steinberg USB ASIO.
+- [x] Step 5: committed (5becf9c, 86609d4).
 
 ---
 
