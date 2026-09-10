@@ -45,6 +45,11 @@ cmake -S "$DEPS/portaudio-src" -B "$DEPS/portaudio-build" -G Ninja \
 cmake --build "$DEPS/portaudio-build" --parallel
 cmake --install "$DEPS/portaudio-build"
 
+# 3b. the static library needs its Windows system libraries at link time and
+#     Ardour reads pkg-config --libs (not --static): list them in Libs.
+PC="$PREFIX/lib/pkgconfig/portaudio-2.0.pc"
+grep -q -- '-lsetupapi' "$PC" || sed -i 's|^Libs:.*|& -lwinmm -lole32 -lsetupapi -luuid -lksuser|' "$PC"
+
 # 4. sanity check
 [ -f "$PREFIX/include/pa_asio.h" ] || { echo "pa_asio.h missing: ASIO not enabled" >&2; exit 1; }
 if ! nm "$PREFIX/lib/libportaudio.a" 2>/dev/null | grep -q PaAsio_ShowControlPanel; then
