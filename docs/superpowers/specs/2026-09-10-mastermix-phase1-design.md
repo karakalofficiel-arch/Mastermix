@@ -79,6 +79,24 @@ Modifications de code minimales :
   « Ahmed Hadjadj », chemins des DLL MSYS2 au lieu du cross-stack Linux.
   Le script original reste intact pour le rebase.
 
+## 4 bis. Interface en français
+
+Demande utilisateur du 2026-09-10 : l'interface est en français par défaut.
+
+- Les traductions gettext d'Ardour (`gtk2_ardour/po/fr.po`, `libs/ardour/po/fr.po`,
+  `libs/gtkmm2ext/po/fr.po`, `libs/tk/ytk/po/fr.po`) sont compilées par
+  `waf i18n_mo` et livrées dans `share/locale/fr/LC_MESSAGES/<domaine>.mo`
+  (même arborescence que `waf install`). Le script de packaging s'en charge.
+- Sous Windows, `bundle_env_mingw.cc` pointe `localedir` vers
+  `<données>/locale`. Si ni `LANGUAGE` ni `LANG` ne sont définis dans
+  l'environnement, MasterMix définit `LANGUAGE=fr` avant `setlocale`, donc
+  français par défaut quel que soit le Windows. L'utilisateur peut forcer une
+  autre langue avec `LANGUAGE=en` ou désactiver les traductions dans
+  Préférences > Apparence > Traduction (mécanisme Ardour inchangé).
+- Les `.po` ne sont pas modifiés (aucune retraduction en phase 1) ; les
+  textes ajoutés par MasterMix (À propos) restent en anglais, comme le reste
+  des chaînes non traduites d'Ardour.
+
 ## 5. Thème `dark-mastermix.colors`
 
 Dérivé de `dark-ardour.colors` (535 couleurs, XML `<Color name value>`).
@@ -148,8 +166,8 @@ Règles d'application :
   inclus donc WASAPI/WDM-KS), Dummy, JACK.
 - Patches de build éventuels : un fichier par patch dans
   `tools/mastermix/patches/`, appliqués en commits distincts sur la branche.
-- Sortie : `build/gtk2_ardour/mastermix-9.8.0.exe` (le nom du binaire
-  suit `PROGRAM_NAME` en minuscules).
+- Sortie : `build/gtk2_ardour/ardour-9.8.0.exe` (waf nomme toujours le
+  binaire `ardour-<version>` ; le packaging le renomme `MasterMix.exe`).
 - Packaging : `tools/mastermix/package-msys2.sh` copie exe, DLL (via
   `ldd`), `share/`, thèmes, ressources dans `dist/MasterMix/`, puis NSIS
   (`makensis`, paquet MSYS2 `mingw-w64-x86_64-nsis`) produit
