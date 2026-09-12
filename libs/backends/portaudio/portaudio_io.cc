@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <ctype.h>
+#include <algorithm>
 #include <glibmm.h>
 
 #include "portaudio_io.h"
@@ -455,6 +457,14 @@ PortAudioIO::get_default_input_device () const
 {
 	const PaHostApiInfo* info = Pa_GetHostApiInfo (_host_api_index);
 	if (info == NULL) return -1;
+#ifdef WITH_ASIO
+	if (info->type == paASIO) {
+		PaDeviceIndex asio = windows_default_asio_device (true);
+		if (asio >= 0) {
+			return asio;
+		}
+	}
+#endif
 	return info->defaultInputDevice;
 }
 
@@ -463,7 +473,168 @@ PortAudioIO::get_default_output_device () const
 {
 	const PaHostApiInfo* info = Pa_GetHostApiInfo (_host_api_index);
 	if (info == NULL) return -1;
+#ifdef WITH_ASIO
+	if (info->type == paASIO) {
+		PaDeviceIndex asio = windows_default_asio_device (false);
+		if (asio >= 0) {
+			return asio;
+		}
+	}
+#endif
 	return info->defaultOutputDevice;
+}
+
+/* MasterMix: ASIO drivers are enumerated from the registry in alphabetical
+ * order and PortAudio has no notion of a "default" ASIO driver, so Ardour
+ * picked whichever driver sorted first (ASIO4ALL, FL Studio ASIO...). We
+ * look up the endpoint Windows uses by default (through WASAPI, whose
+ * default device is the Windows default) and pick the ASIO driver whose
+ * name shares the most words with it, e.g. "Line (Steinberg UR22C)" and
+ * "Yamaha Steinberg USB ASIO".
+ */
+
+static void
+tokenize_device_name (const std::string& name, std::vector<std::string>& out)
+{
+	/* words that appear in nearly every device name and carry no identity */
+	static const char* const stop[] = {
+		"asio", "usb", "audio", "driver", "device", "speakers", "speaker",
+		"line", "output", "input", "headphones", "digital", "analog",
+		"default", "generic", "windows", "sound", "haut-parleurs", "sortie",
+		"entree", "casque", "the", "and", "for", "out", "pro", NULL
+	};
+
+	std::string word;
+	for (std::string::size_type i = 0; i <= name.size (); ++i) {
+		char c = i < name.size () ? name[i] : ' ';
+		if (isalnum ((unsigned char)c)) {
+			word += (char)tolower ((unsigned char)c);
+			continue;
+		}
+		if (word.size () >= 3) {
+			bool skip = false;
+			for (const char* const* s = stop; *s; ++s) {
+				if (word == *s) {
+					skip = true;
+					break;
+				}
+			}
+			if (!skip) {
+				out.push_back (word);
+			}
+		}
+		word.clear ();
+	}
+}
+
+PaDeviceIndex
+PortAudioIO::windows_default_asio_device (bool input) const
+{
+#ifdef WITH_ASIO
+	PaHostApiIndex asio_api = Pa_HostApiTypeIdToHostApiIndex (paASIO);
+	if (asio_api < 0) {
+		return -1;
+	}
+
+	/* the Windows default endpoint, as seen by WASAPI (full name), falling
+	 * back to PortAudio's global default (MME, name truncated to 31 chars) */
+	PaDeviceIndex win_default = -1;
+	PaHostApiIndex wasapi_api = Pa_HostApiTypeIdToHostApiIndex (paWASAPI);
+	if (wasapi_api >= 0) {
+		const PaHostApiInfo* wasapi = Pa_GetHostApiInfo (wasapi_api);
+		if (wasapi) {
+			win_default = input ? wasapi->defaultInputDevice : wasapi->defaultOutputDevice;
+		}
+	}
+	if (win_default < 0) {
+		win_default = input ? Pa_GetDefaultInputDevice () : Pa_GetDefaultOutputDevice ();
+	}
+	const PaDeviceInfo* win_nfo = win_default >= 0 ? Pa_GetDeviceInfo (win_default) : NULL;
+	if (!win_nfo || !win_nfo->name) {
+		return -1;
+	}
+
+	std::vector<std::string> want;
+	tokenize_device_name (win_nfo->name, want);
+	if (want.empty ()) {
+		return -1;
+	}
+
+	PaDeviceIndex best       = -1;
+	size_t        best_score = 0;
+	int           n_devices  = Pa_GetDeviceCount ();
+
+	for (int i = 0; i < n_devices; ++i) {
+		const PaDeviceInfo* nfo = Pa_GetDeviceInfo (i);
+		if (!nfo || nfo->hostApi != asio_api || !nfo->name) {
+			continue;
+		}
+		if (input ? nfo->maxInputChannels <= 0 : nfo->maxOutputChannels <= 0) {
+			continue;
+		}
+		std::vector<std::string> have;
+		tokenize_device_name (nfo->name, have);
+		size_t score = 0;
+		for (std::vector<std::string>::const_iterator w = want.begin (); w != want.end (); ++w) {
+			if (std::find (have.begin (), have.end (), *w) != have.end ()) {
+				++score;
+			}
+		}
+		DEBUG_AUDIO (string_compose ("ASIO candidate '%1' vs Windows default '%2': %3 common words\n",
+		                             nfo->name, win_nfo->name, score));
+		if (score > best_score) {
+			best_score = score;
+			best       = i;
+		}
+	}
+	return best;
+#else
+	return -1;
+#endif
+}
+
+std::string
+PortAudioIO::preferred_host_api ()
+{
+	std::vector<std::string> apis;
+	host_api_list (apis);
+	if (apis.empty ()) {
+		return std::string ();
+	}
+	static const PaHostApiTypeId order[] = {
+#ifdef WITH_ASIO
+		paASIO,
+#endif
+		paWASAPI
+	};
+	for (size_t k = 0; k < sizeof (order) / sizeof (order[0]); ++k) {
+		PaHostApiIndex idx = Pa_HostApiTypeIdToHostApiIndex (order[k]);
+		if (idx < 0) {
+			continue;
+		}
+		const PaHostApiInfo* info = Pa_GetHostApiInfo (idx);
+		if (info && info->name) {
+			return info->name;
+		}
+	}
+	return apis.front ();
+}
+
+std::string
+PortAudioIO::preferred_device_name (bool input) const
+{
+	PaDeviceIndex idx = input ? get_default_input_device () : get_default_output_device ();
+	if (idx < 0) {
+		return std::string ();
+	}
+	const PaDeviceInfo* nfo = Pa_GetDeviceInfo (idx);
+	if (!nfo || !nfo->name) {
+		return std::string ();
+	}
+	if (input ? nfo->maxInputChannels <= 0 : nfo->maxOutputChannels <= 0) {
+		return std::string ();
+	}
+	return Glib::locale_to_utf8 (nfo->name);
 }
 
 void

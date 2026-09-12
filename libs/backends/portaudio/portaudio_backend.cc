@@ -189,6 +189,10 @@ std::string
 PortAudioBackend::driver_name () const
 {
 	std::string driver_name = _pcmio->get_host_api ();
+	if (driver_name.empty ()) {
+		/* MasterMix: nothing saved yet, preselect ASIO rather than MME */
+		driver_name = _pcmio->preferred_host_api ();
+	}
 	DEBUG_AUDIO (string_compose ("Portaudio: driver_name %1 \n", driver_name));
 	return driver_name;
 }
@@ -363,12 +367,19 @@ PortAudioBackend::device_name () const
 std::string
 PortAudioBackend::input_device_name () const
 {
+	if (_input_audio_device.empty () && !_pcmio->get_host_api ().empty ()) {
+		/* MasterMix: nothing saved yet, preselect the device Windows uses */
+		return _pcmio->preferred_device_name (true);
+	}
 	return _input_audio_device;
 }
 
 std::string
 PortAudioBackend::output_device_name () const
 {
+	if (_output_audio_device.empty () && !_pcmio->get_host_api ().empty ()) {
+		return _pcmio->preferred_device_name (false);
+	}
 	return _output_audio_device;
 }
 

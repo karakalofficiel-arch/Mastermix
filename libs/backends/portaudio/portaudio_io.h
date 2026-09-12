@@ -48,6 +48,15 @@ public:
 	PaDeviceIndex get_default_input_device () const;
 	PaDeviceIndex get_default_output_device () const;
 
+	/* MasterMix: name of the driver to preselect when none was saved.
+	 * ASIO when available, then WASAPI, then the first host API. */
+	std::string preferred_host_api ();
+
+	/* MasterMix: name of the device to preselect for the current host API
+	 * when none was saved (the device Windows itself uses). Empty if the
+	 * host API has no usable device. */
+	std::string preferred_device_name (bool input) const;
+
 	bool     update_devices();
 	void     input_device_list (std::map<int, std::string> &devices) const;
 	void     output_device_list (std::map<int, std::string> &devices) const;
@@ -111,6 +120,7 @@ private: // Methods
 	static bool& pa_initialized();
 
 	void clear_device_lists ();
+	PaDeviceIndex windows_default_asio_device (bool input) const;
 	void add_none_devices ();
 	void add_default_devices ();
 	void add_devices ();
