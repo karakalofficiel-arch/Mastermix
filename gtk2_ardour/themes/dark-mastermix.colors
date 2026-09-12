@@ -57,6 +57,10 @@
     <Color name="widget:orange" value="904010ff"/>  <!--tempo marker-->
     <Color name="widget:ruddy" value="7c3a3aff"/>  <!--processor prefader-->
     <Color name="widget:yellow" value="eddc3dff"/> <!-- VU meter outline -->
+    <Color name="mastermix:audio track" value="1c2733ff"/>
+    <Color name="mastermix:midi track" value="332a1cff"/>
+    <Color name="mastermix:audio bus" value="1f2e14ff"/>
+    <Color name="mastermix:master bus" value="33141cff"/>
   </Colors>
   <ColorAliases>
     <ColorAlias name="active crossfade" alias="neutral:foreground"/>
@@ -139,8 +143,8 @@
     <ColorAlias name="grid line micro" alias="neutral:midground"/>
     <ColorAlias name="grid line minor" alias="neutral:foreground2"/>
     <ColorAlias name="group tab base" alias="theme:bg2"/>
-    <ColorAlias name="gtk_audio_bus" alias="widget:blue darker"/>
-    <ColorAlias name="gtk_audio_track" alias="theme:bg1"/>
+    <ColorAlias name="gtk_audio_bus" alias="mastermix:audio bus"/>
+    <ColorAlias name="gtk_audio_track" alias="mastermix:audio track"/>
     <ColorAlias name="gtk_automation_track_header" alias="theme:bg"/>
     <ColorAlias name="gtk_background" alias="theme:bg"/>
     <ColorAlias name="gtk_bases" alias="theme:bg2"/>
@@ -162,7 +166,7 @@
     <ColorAlias name="gtk_light_text_on_dark" alias="neutral:foreground2"/>
     <ColorAlias name="gtk_lightest" alias="neutral:foregroundest"/>
     <ColorAlias name="gtk_midi_channel_selector" alias="widget:blue"/>
-    <ColorAlias name="gtk_midi_track" alias="widget:green darker"/>
+    <ColorAlias name="gtk_midi_track" alias="mastermix:midi track"/>
     <ColorAlias name="gtk_mono" alias="neutral:foreground"/>
     <ColorAlias name="gtk_mute" alias="alert:yellow"/>
     <ColorAlias name="gtk_scrollbar_slider" alias="neutral:midground"/>
@@ -488,6 +492,7 @@
     <ColorAlias name="zoom button: fill" alias="widget:bg"/>
     <ColorAlias name="zoom button: fill active" alias="alert:green"/>
     <ColorAlias name="zoom button: led active" alias="alert:green"/>
+    <ColorAlias name="gtk_master_bus" alias="mastermix:master bus"/>
   </ColorAliases>
   <Modifiers>
     <Modifier name="audio bus base" modifier="= alpha:0.3"/>

@@ -308,12 +308,14 @@ AudioTimeAxisView::update_control_names ()
 			controls_base_unselected_name = "AudioTrackControlsBaseInactiveUnselected";
 		}
 	} else {
+		/* MasterMix: the master bus header has its own colour */
+		const std::string base = _route->is_master () ? "MasterBus" : "Bus";
 		if (_route->active()) {
-			controls_base_selected_name = "BusControlsBaseSelected";
-			controls_base_unselected_name = "BusControlsBaseUnselected";
+			controls_base_selected_name = base + "ControlsBaseSelected";
+			controls_base_unselected_name = base + "ControlsBaseUnselected";
 		} else {
-			controls_base_selected_name = "BusControlsBaseInactiveSelected";
-			controls_base_unselected_name = "BusControlsBaseInactiveUnselected";
+			controls_base_selected_name = base + "ControlsBaseInactiveSelected";
+			controls_base_unselected_name = base + "ControlsBaseInactiveUnselected";
 		}
 	}
 

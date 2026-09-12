@@ -82,6 +82,24 @@ ALIASES = {
     "selection rect": "theme:contrasting selection",
 }
 
+# New colour entries appended to <Colors> (names that do not exist upstream).
+# Phase 2: track header colours by type, Pro Tools style, kept dark so the
+# apple-green selection and the #E8E8E8 text stay readable (>= 7:1).
+EXTRA_COLORS = {
+    "mastermix:audio track": "1c2733ff",   # blue-grey, audio track header
+    "mastermix:midi track": "332a1cff",    # brown, MIDI / instrument header
+    "mastermix:audio bus": "1f2e14ff",     # dark green, aux bus header
+    "mastermix:master bus": "33141cff",    # dark wine, master header
+}
+
+# Aliases retargeted (existing upstream) or appended (new) in <ColorAliases>.
+EXTRA_ALIASES = {
+    "gtk_audio_track": "mastermix:audio track",
+    "gtk_midi_track": "mastermix:midi track",
+    "gtk_audio_bus": "mastermix:audio bus",
+    "gtk_master_bus": "mastermix:master bus",
+}
+
 _COLOR_RE = re.compile(r'(<Color name="([^"]+)" value=")([^"]+)(")')
 _ALIAS_RE = re.compile(r'(<ColorAlias name="([^"]+)" alias=")([^"]+)(")')
 
@@ -113,6 +131,27 @@ def generate(source=SOURCE, target=TARGET):
 
     text = _COLOR_RE.sub(swap_color, text)
     text = _ALIAS_RE.sub(swap_alias, text)
+
+    # existing aliases retargeted to the new colours
+    def swap_extra_alias(m):
+        return m.group(1) + EXTRA_ALIASES.get(m.group(2), m.group(3)) + m.group(4)
+
+    text = _ALIAS_RE.sub(swap_extra_alias, text)
+
+    # new colours and new aliases appended once (idempotent on our own output)
+    existing_colors = {m[1] for m in _COLOR_RE.findall(text)}
+    existing_aliases = {m[1] for m in _ALIAS_RE.findall(text)}
+    color_lines = "".join(
+        f'    <Color name="{n}" value="{v}"/>\n'
+        for n, v in EXTRA_COLORS.items() if n not in existing_colors
+    )
+    alias_lines = "".join(
+        f'    <ColorAlias name="{n}" alias="{t}"/>\n'
+        for n, t in EXTRA_ALIASES.items() if n not in existing_aliases
+    )
+    text = text.replace("  </Colors>", color_lines + "  </Colors>", 1)
+    text = text.replace("  </ColorAliases>", alias_lines + "  </ColorAliases>", 1)
+
     Path(target).parent.mkdir(parents=True, exist_ok=True)
     Path(target).write_text(text, encoding="utf-8")
     return text

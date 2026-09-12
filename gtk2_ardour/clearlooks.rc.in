@@ -843,6 +843,20 @@ style "control_master_base" = "default"
 	bg[SELECTED] = @background
 }
 
+style "master_bus_base" = "default"
+{
+	# MasterMix: the master bus header gets its own colour (Pro Tools style)
+	font_name = " 8"
+	fg[NORMAL] = @foreground
+	fg[ACTIVE] = darker(@foreground)
+
+	bg[NORMAL] = @master_bus
+	bg[ACTIVE] = @background
+	bg[PRELIGHT] = @background
+	bg[INSENSITIVE] = @background
+	bg[SELECTED] = @background
+}
+
 style "midi_track_base" = "default"
 {
 	font_name = " 8"
@@ -1219,6 +1233,10 @@ widget "*MidiTrackFader" style:highest "midi_track_fader"
 widget "*AudioBusFader" style:highest "audio_bus_fader"
 
 widget "*BusControlsBaseUnselected" style:highest "audio_bus_base"
+widget "*MasterBusControlsBaseUnselected" style:highest "master_bus_base"
+widget "*MasterBusControlsBaseSelected" style:highest "track_header_selected"
+widget "*MasterBusControlsBaseInactiveUnselected" style:highest "track_header_inactive"
+widget "*MasterBusControlsBaseInactiveSelected" style:highest "track_header_inactive_selected"
 widget "*TrackSeparator" style:highest "track_separator"
 widget "*TrackNameEditor*" style:highest "track_name_editor"
 widget "*CrossfadeEditAuditionButton*" style:highest "bright_when_active"
