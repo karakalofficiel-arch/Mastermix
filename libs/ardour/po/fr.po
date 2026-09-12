@@ -4665,11 +4665,11 @@ msgstr ""
 
 #: utils.cc:464 utils.cc:488
 msgid "Slide"
-msgstr "Glisse"
+msgstr "Slip"
 
 #: utils.cc:466 utils.cc:484
 msgid "Ripple"
-msgstr "Vague"
+msgstr "Shuffle"
 
 #: utils.cc:468 utils.cc:481
 msgid "Lock"

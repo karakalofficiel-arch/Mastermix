@@ -2256,7 +2256,7 @@ msgstr "Fenêtres"
 
 #: ardour_ui_ed.cc:177 mixer_ui.cc:137 mixer_ui.cc:522
 msgid "Mixer"
-msgstr "Console de mixage"
+msgstr "Mixage"
 
 #: ardour_ui_ed.cc:178 editor.cc:5540 editor.cc:5690 public_editor.cc:36
 #: rc_option_editor.cc:3368 rc_option_editor.cc:3372 rc_option_editor.cc:3381
@@ -2267,7 +2267,7 @@ msgstr "Console de mixage"
 #: rc_option_editor.cc:3519 rc_option_editor.cc:3530 rc_option_editor.cc:3551
 #: rc_option_editor.cc:3576 rc_option_editor.cc:3591
 msgid "Editor"
-msgstr "Éditeur"
+msgstr "Édition"
 
 #: ardour_ui_ed.cc:179 ardour_ui_ed.cc:756 plugin_manager_ui.cc:173
 #: rc_option_editor.cc:2483 rc_option_editor.cc:5529
@@ -3814,7 +3814,7 @@ msgstr "erreur de programmation : %1 %2"
 #: audio_clock.cc:2240 editor.cc:418 editor_actions.cc:579
 #: export_timespan_selector.cc:112
 msgid "Bars:Beats"
-msgstr "Mesures : temps"
+msgstr "Mesures|Temps"
 
 #: audio_clock.cc:2241 export_timespan_selector.cc:107
 msgid "Minutes:Seconds"
@@ -4630,7 +4630,7 @@ msgstr "Temps"
 #: export_timespan_selector.cc:541 location_ui.cc:333 midi_list_editor.cc:116
 #: region_editor.cc:125 time_info_box.cc:106
 msgid "Length"
-msgstr "Durée"
+msgstr "Longueur"
 
 #: edit_note_dialog.cc:175
 msgid "edit note"
@@ -4796,7 +4796,7 @@ msgstr "Ch :"
 
 #: editing_context.cc:233
 msgid "Snap"
-msgstr "Aimant"
+msgstr "Grille"
 
 #: editing_context.cc:243
 msgid "Note Length to Draw (AUTO uses the current Grid setting)"
@@ -5409,11 +5409,11 @@ msgstr "Repère"
 
 #: editor.cc:194 editor_actions.cc:563
 msgid "Slide"
-msgstr "Glisse"
+msgstr "Slip"
 
 #: editor.cc:195 editor_actions.cc:562
 msgid "Ripple"
-msgstr "Vague"
+msgstr "Shuffle"
 
 #: editor.cc:196 editor_actions.cc:1341 editor_markers.cc:1159
 #: editor_rulers.cc:285 location_ui.cc:70
@@ -5519,7 +5519,7 @@ msgstr "Pistes"
 
 #: editor.cc:690 trigger_page.cc:141
 msgid "Tracks & Busses"
-msgstr "Pistes et bus"
+msgstr "Pistes"
 
 #: editor.cc:691 trigger_page.cc:142
 msgid "Sources"
@@ -5527,7 +5527,7 @@ msgstr "Sources"
 
 #: editor.cc:692 trigger_page.cc:143
 msgid "Regions"
-msgstr "Régions"
+msgstr "Clips"
 
 #: editor.cc:693 trigger_page.cc:140
 msgid "Clips"
@@ -5555,7 +5555,7 @@ msgstr "Groupes"
 
 #: editor.cc:696 mixer_ui.cc:383
 msgid "Track & Bus Groups"
-msgstr "Groupes de pistes et bus"
+msgstr "Groupes"
 
 #: editor.cc:697
 msgid "Marks"
@@ -5862,7 +5862,7 @@ msgstr "Décaler la piste vers la gauche après le point d'édition"
 
 #: editor.cc:2079 editor.cc:2136
 msgid "Nudge"
-msgstr "Décaler"
+msgstr "Déplacer"
 
 #: editor.cc:2262
 msgid ""
@@ -6172,7 +6172,7 @@ msgstr "Fondu"
 
 #: editor_actions.cc:117
 msgid "Region"
-msgstr "Région"
+msgstr "Clip"
 
 #: editor_actions.cc:118
 msgid "Layering"
@@ -6908,7 +6908,7 @@ msgstr "Changer de point d'édition (repères inclus)"
 
 #: editor_actions.cc:564
 msgid "EditMode|Lock"
-msgstr "Verrou"
+msgstr "Spot"
 
 #: editor_actions.cc:565
 msgid "Cycle Edit Mode"
@@ -7050,7 +7050,7 @@ msgstr "erreur de programmation: %1: %2"
 #: route_time_axis.cc:954 template_dialog.cc:254 transport_masters_dialog.cc:88
 #: trigger_strip.cc:407 vca_master_strip.cc:498 vca_time_axis.cc:466
 msgid "Remove"
-msgstr "Supprimer"
+msgstr "Retirer"
 
 #: editor_actions.cc:1326
 msgid "Raise"
@@ -13740,7 +13740,7 @@ msgstr "Panoramique (2D)"
 
 #: panner2d.cc:925 panner_ui.cc:406 plugin_ui.cc:602 route_properties_box.cc:98
 msgid "Bypass"
-msgstr "Court-circuiter"
+msgstr "Contourner"
 
 #: panner2d.cc:931
 msgid "Panner"
@@ -27990,3 +27990,75 @@ msgstr "Fichier vidéo d'entrée"
 
 #~ msgid "This is a BETA RELEASE"
 #~ msgstr "Ceci est une VERSION BETA"
+
+#: mastermix
+msgid "INSERTS A-E"
+msgstr "INSERTS A-E"
+
+#: mastermix
+msgid "SENDS A-E"
+msgstr "DÉPARTS A-E"
+
+#: mastermix
+msgid "I/O"
+msgstr "E/S"
+
+#: mastermix
+msgid "Click to add a plugin"
+msgstr "Cliquer pour ajouter un plugin"
+
+#: mastermix
+msgid "Click to add a send"
+msgstr "Cliquer pour ajouter un départ"
+
+#: mastermix
+msgid "%1 (+%2 more inserts, see the mixer)"
+msgstr "%1 (+%2 inserts, voir le mixage)"
+
+#: mastermix
+msgid "%1 (pre-fader)"
+msgstr "%1 (pré-fader)"
+
+#: mastermix
+msgid "Fader gain (scroll to change)"
+msgstr "Gain du fader (molette pour modifier)"
+
+#: mastermix
+msgid "Pan (click to open the panner)"
+msgstr "Pan (cliquer pour ouvrir le panoramique)"
+
+#: mastermix
+msgid "Add plugin..."
+msgstr "Ajouter un plugin…"
+
+#: mastermix
+msgid "Remove send"
+msgstr "Retirer le départ"
+
+#: mastermix
+msgid "(no bus available)"
+msgstr "(aucun bus disponible)"
+
+#: mastermix
+msgid "Pan: %1"
+msgstr "Pan : %1"
+
+#: mastermix
+msgid "SHUFFLE"
+msgstr "SHUFFLE"
+
+#: mastermix
+msgid "SPOT"
+msgstr "SPOT"
+
+#: mastermix
+msgid "SLIP"
+msgstr "SLIP"
+
+#: mastermix
+msgid "GRID"
+msgstr "GRID"
+
+#: mastermix
+msgid "Pro Tools layout for the Edit window (restart required)"
+msgstr "Disposition Pro Tools de la fenêtre Édition (redémarrage requis)"
