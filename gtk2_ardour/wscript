@@ -698,6 +698,11 @@ def build(bld):
     elif bld.env['build_target'] == 'mingw':
         obj.source += [ 'bundle_env_mingw.cc' ]
         obj.source += [ 'windows_icon.rc' ]
+        # MasterMix: windres does not report the .ico as a dependency, so a
+        # regenerated icon never triggered a rebuild of the resource object.
+        icon_ico = bld.path.find_resource('icons/' + bld.env['PROGRAM_NAME'] + '.ico')
+        if icon_ico is not None:
+            bld.add_manual_dependency(bld.path.find_resource('windows_icon.rc'), icon_ico)
     elif bld.env['build_target'] == 'msvc':
         obj.source += [ 'bundle_env_msvc2.cc' ]
         obj.source += [ 'windows_icon.rc' ]
