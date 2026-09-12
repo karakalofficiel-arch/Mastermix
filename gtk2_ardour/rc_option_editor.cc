@@ -2649,6 +2649,14 @@ RCOptionEditor::RCOptionEditor ()
 
 	add_option (_("Appearance"), new OptionEditorHeading (_("Theme")));
 
+	/* MasterMix */
+	add_option (_("Appearance"), new BoolOption (
+		            "use-protools-layout",
+		            _("Pro Tools layout for the Edit window (restart required)"),
+		            sigc::mem_fun (UIConfiguration::instance(), &UIConfiguration::get_use_protools_layout),
+		            sigc::mem_fun (UIConfiguration::instance(), &UIConfiguration::set_use_protools_layout)
+		            ));
+
 	add_option (_("Appearance"), new BoolOption (
 		            "use-route-color-widely",
 		            _("Color faders with track/bus colors"),
