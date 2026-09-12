@@ -1160,6 +1160,9 @@ EditingContext::snap_mode_chosen (SnapMode mode)
 		snap_mode_button.set_active_state (Gtkmm2ext::ExplicitActive);
 	}
 
+	/* MasterMix: every snap change (menu, keyboard, state restore) reaches the PT GRID button */
+	snap_mode_changed_hook ();
+
 	instant_save ();
 }
 
@@ -1322,7 +1325,6 @@ EditingContext::set_snap_mode (SnapMode mode)
 	EC_LOCAL_TEMPO_SCOPE;
 
 	snap_mode_actions[mode]->set_active (true);
-	snap_mode_changed_hook ();
 }
 
 void
