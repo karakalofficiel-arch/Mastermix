@@ -72,6 +72,7 @@ class EditorAutomationLine;
 class TimeSelection;
 class RouteGroupMenu;
 class ItemCounts;
+class PTTrackColumns;
 
 class RouteTimeAxisView : public RouteUI, public StripableTimeAxisView
 {
@@ -252,6 +253,7 @@ protected:
 	ArdourWidgets::ArdourButton playlist_button;
 	ArdourWidgets::ArdourButton automation_button;
 	ArdourWidgets::ArdourButton number_label;
+	PTTrackColumns* _pt_columns; /* MasterMix: Inserts/Sends/I-O columns, 0 when the PT layout is off */
 
 	Gtk::Menu           subplugin_menu;
 	Gtk::Menu*          automation_action_menu;

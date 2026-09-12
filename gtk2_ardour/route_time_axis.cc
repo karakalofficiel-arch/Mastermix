@@ -84,6 +84,7 @@
 #include "paste_context.h"
 #include "patch_change_widget.h"
 #include "point_selection.h"
+#include "pt_track_columns.h"
 #include "public_editor.h"
 #include "region_view.h"
 #include "selection.h"
@@ -122,6 +123,7 @@ RouteTimeAxisView::RouteTimeAxisView (PublicEditor& ed, Session* sess, ArdourCan
 	, gm (sess, true, 75, 14)
 	, _ignore_set_layer_display (false)
 	, pan_automation_item(NULL)
+	, _pt_columns (0)
 {
 	subplugin_menu.set_name ("ArdourContextMenu");
 	number_label.set_name("tracknumber label");
@@ -300,6 +302,14 @@ RouteTimeAxisView::set_route (std::shared_ptr<Route> rt)
 		}
 	}
 
+	/* MasterMix phase 2: Pro Tools style Inserts / Sends / I-O columns */
+	if (UIConfiguration::instance ().get_use_protools_layout () && !_route->is_monitor () && !ARDOUR::Profile->get_mixbus ()) {
+		_pt_columns = new PTTrackColumns (*this, _session);
+		_pt_columns->set_route (_route);
+		controls_table.attach (*_pt_columns, 5, 6, 0, 3, Gtk::SHRINK, Gtk::FILL, 4, 0);
+		_pt_columns->show ();
+	}
+
 	_y_position = -1;
 
 	_route->processors_changed.connect (*this, invalidator (*this), std::bind (&RouteTimeAxisView::processors_changed, this, _1), gui_context());
@@ -343,6 +353,7 @@ RouteTimeAxisView::~RouteTimeAxisView ()
 	}
 
 	delete automation_action_menu;
+	delete _pt_columns;
 
 	_automation_tracks.clear ();
 
@@ -1089,6 +1100,10 @@ RouteTimeAxisView::set_height (uint32_t h, TrackHeightMode m, bool from_idle)
 			playlist_button.show();
 		}
 
+		if (_pt_columns) {
+			_pt_columns->show ();
+		}
+
 	} else {
 
 		reset_meter();
@@ -1108,6 +1123,10 @@ RouteTimeAxisView::set_height (uint32_t h, TrackHeightMode m, bool from_idle)
 
 		if (is_track() && track()->mode() == ARDOUR::Normal) {
 			playlist_button.hide ();
+		}
+
+		if (_pt_columns) {
+			_pt_columns->hide ();
 		}
 
 	}

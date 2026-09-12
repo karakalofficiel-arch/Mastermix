@@ -104,6 +104,9 @@ public:
 
 	PluginSelector* plugin_selector();
 
+	/* MasterMix: the PT track header needs the strip's ProcessorBox to open plugin windows */
+	MixerStrip* pt_strip_by_route (std::shared_ptr<ARDOUR::Route> r) const { return strip_by_route (r); }
+
 	void  set_strip_width (Width, bool save = false);
 	Width get_strip_width () const { return _strip_width; }
 

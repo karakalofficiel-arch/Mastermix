@@ -1377,6 +1377,10 @@ TimeAxisView::preset_height (Height h)
 	case HeightLarge:
 		return (button_height * 2) + extra_height + PX_SCALE (60);
 	case HeightNormal:
+		if (UIConfiguration::instance ().get_use_protools_layout ()) {
+			/* MasterMix: room for the 5 insert/send slots (5 x 17 px + title) */
+			return std::max ((button_height * 2) + extra_height + 10, (uint32_t) PX_SCALE (5 * 17 + 18) + extra_height);
+		}
 		return (button_height * 2) + extra_height + 10;
 	case HeightSmall:
 		return button_height + extra_height;

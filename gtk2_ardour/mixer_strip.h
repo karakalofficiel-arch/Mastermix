@@ -106,6 +106,7 @@ public:
 
 	GainMeter&      gain_meter()      { return gpm; }
 	PannerUI&       panner_ui()       { return panners; }
+	ProcessorBox&   pt_processor_box () { return processor_box; } /* MasterMix: PT header opens plugin windows through it */
 	PluginSelector* plugin_selector();
 
 	void fast_update ();
