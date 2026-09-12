@@ -62,7 +62,10 @@ using namespace PBD;
 void
 Editor::showhide_att_left (bool yn)
 {
-	Tabbable::showhide_att_left (yn);
+	if (!_pt_layout) {
+		/* MasterMix: under the PT layout the left column (track lists) stays visible */
+		Tabbable::showhide_att_left (yn);
+	}
 	show_editor_mixer (yn);
 }
 
@@ -142,7 +145,11 @@ Editor::show_editor_mixer (bool yn)
 		}
 
 		if (current_mixer_strip && current_mixer_strip->get_parent() == 0) {
-			content_att_left.add (*current_mixer_strip);
+			if (_pt_layout) {
+				_pt_left_hbox.pack_end (*current_mixer_strip, false, false);
+			} else {
+				content_att_left.add (*current_mixer_strip);
+			}
 			current_mixer_strip->show ();
 		}
 
@@ -155,7 +162,11 @@ Editor::show_editor_mixer (bool yn)
 
 		if (current_mixer_strip) {
 			if (current_mixer_strip->get_parent() != 0) {
-				content_att_left.remove ();
+				if (_pt_layout) {
+					_pt_left_hbox.remove (*current_mixer_strip);
+				} else {
+					content_att_left.remove ();
+				}
 			}
 		}
 	}

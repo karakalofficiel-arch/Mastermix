@@ -51,6 +51,7 @@
 #include "control_point.h"
 #include "editing.h"
 #include "editor.h"
+#include "pt_edit_modes.h"
 #include "gui_thread.h"
 #include "luainstance.h"
 #include "main_clock.h"
@@ -1230,6 +1231,9 @@ Editor::parameter_changed (std::string p)
 			ripple_mode_selector.show();
 		} else {
 			ripple_mode_selector.hide();
+		}
+		if (_pt_edit_modes) {
+			_pt_edit_modes->sync (Config->get_edit_mode (), snap_mode ());
 		}
 	} else if (p == "show-track-meters") {
 		toggle_meter_updating();

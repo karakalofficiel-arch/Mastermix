@@ -457,6 +457,18 @@ Editor::restore_ruler_visibility ()
 			ruler_video_action->set_active (yn);
 		}
 
+	} else if (UIConfiguration::instance ().get_use_protools_layout ()) {
+		/* MasterMix: Pro Tools default rulers for a new session */
+		ruler_bbt_action->set_active (true);
+		ruler_minsec_action->set_active (true);
+		ruler_timecode_action->set_active (true);
+		ruler_samples_action->set_active (true);
+		ruler_tempo_action->set_active (true);
+		ruler_meter_action->set_active (true);
+		ruler_marker_action->set_active (true);
+		ruler_range_action->set_active (false);
+		ruler_section_action->set_active (false);
+		ruler_video_action->set_active (false);
 	} else {
 		Temporal::TimeDomain const td (_session->config.get_default_time_domain ());
 		/* New session: no rulers have been displayed yet. let's assign default rulers from the session's time domain */

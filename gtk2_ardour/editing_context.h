@@ -309,6 +309,9 @@ class EditingContext : public ARDOUR::SessionHandlePtr, public AxisViewProvider,
 
 	Editing::SnapMode  snap_mode () const;
 
+	/* MasterMix: lets the Editor mirror snap changes on its PT mode block */
+	virtual void snap_mode_changed_hook () {}
+
 	virtual void snap_to (Temporal::timepos_t & first,
 	                      Temporal::RoundMode   direction = Temporal::RoundNearest,
 	                      ARDOUR::SnapPref      pref = ARDOUR::SnapToAny_Visual,

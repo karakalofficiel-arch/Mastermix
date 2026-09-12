@@ -116,6 +116,7 @@
 #include "editor.h"
 #include "editor_cursors.h"
 #include "editor_drag.h"
+#include "pt_edit_modes.h"
 #include "editor_group_tabs.h"
 #include "editor_locations.h"
 #include "editor_regions.h"
@@ -175,6 +176,9 @@ using namespace Gtk;
 using namespace Glib;
 using namespace Gtkmm2ext;
 using namespace Editing;
+
+/* MasterMix */
+#define PX_SCALE(px) std::max((float)px, rintf((float)px * UIConfiguration::instance().get_ui_scale()))
 using namespace Temporal;
 
 using PBD::internationalize;
@@ -355,7 +359,12 @@ Editor::Editor ()
 	, current_timefx (nullptr)
 	, current_mixer_strip (nullptr)
 	, show_editor_mixer_when_tracks_arrive (false)
+	, _pt_layout (UIConfiguration::instance ().get_use_protools_layout ())
+	, _pt_edit_modes (nullptr)
 	,  nudge_clock (new AudioClock (X_("nudge"), false, X_("nudge"), true, false, true))
+	, _pt_sel_start_clock (nullptr)
+	, _pt_sel_end_clock (nullptr)
+	, _pt_sel_length_clock (nullptr)
 	, current_stepping_trackview (nullptr)
 	, last_track_height_step_timestamp (0)
 	, _edit_point (EditAtMouse)
@@ -662,6 +671,17 @@ Editor::Editor ()
 	 */
 	content_app_bar.add (_application_bar);
 	content_att_right.add (_editor_list_vbox);
+	if (_pt_layout) {
+		/* MasterMix: Pro Tools style left column */
+		_pt_left_pane.add (_routes->widget ());
+		_pt_left_pane.add (_route_groups->widget ());
+		_pt_left_pane.set_divider (0, 0.7);
+		_pt_left_pane.set_size_request (PX_SCALE (140), -1);
+		_pt_left_hbox.pack_start (_pt_left_pane, true, true);
+		_pt_left_hbox.show_all ();
+		content_att_left.add (_pt_left_hbox);
+		content_att_left.show ();
+	}
 	content_att_bottom.add (_bottom_hbox);
 	content_main_top.add (global_vpacker);
 	content_main.add (editor_summary_pane);
@@ -687,14 +707,25 @@ Editor::Editor ()
 	_midi_inspector->chord_box->InvertChord.connect ([this](bool up) { invert_selected_chord (up); });
 	_midi_inspector->chord_box->DropChord.connect ([this](std::vector<int> which_notes) { drop_selected_chord (which_notes); });
 
-	add_notebook_page (_("Tracks"), _("Tracks & Busses"), _routes->widget ());
-	add_notebook_page (_("Sources"), _("Sources"), _sources->widget ());
-	add_notebook_page (_("Regions"), _("Regions"), _regions->widget ());
-	add_notebook_page (_("Clips"), _("Clips"), _trigger_clip_picker);
-	add_notebook_page (_("Arrange"), _("Arrangement"), _sections->widget ());
-	add_notebook_page (_("Snaps"), _("Snapshots"), _snapshots->widget ());
-	add_notebook_page (_("Groups"), _("Track & Bus Groups"), _route_groups->widget ());
-	add_notebook_page (_("Marks"), _("Ranges & Marks"), _locations->widget ());
+	if (_pt_layout) {
+		/* MasterMix: Tracks and Groups live in the left column (see the
+		 * attachments below); the right list opens on Regions ("Clips" in fr.po) */
+		add_notebook_page (_("Regions"), _("Regions"), _regions->widget ());
+		add_notebook_page (_("Sources"), _("Sources"), _sources->widget ());
+		add_notebook_page (_("Clips"), _("Clips"), _trigger_clip_picker);
+		add_notebook_page (_("Arrange"), _("Arrangement"), _sections->widget ());
+		add_notebook_page (_("Snaps"), _("Snapshots"), _snapshots->widget ());
+		add_notebook_page (_("Marks"), _("Ranges & Marks"), _locations->widget ());
+	} else {
+		add_notebook_page (_("Tracks"), _("Tracks & Busses"), _routes->widget ());
+		add_notebook_page (_("Sources"), _("Sources"), _sources->widget ());
+		add_notebook_page (_("Regions"), _("Regions"), _regions->widget ());
+		add_notebook_page (_("Clips"), _("Clips"), _trigger_clip_picker);
+		add_notebook_page (_("Arrange"), _("Arrangement"), _sections->widget ());
+		add_notebook_page (_("Snaps"), _("Snapshots"), _snapshots->widget ());
+		add_notebook_page (_("Groups"), _("Track & Bus Groups"), _route_groups->widget ());
+		add_notebook_page (_("Marks"), _("Ranges & Marks"), _locations->widget ());
+	}
 
 	/* Don't want to create adjustments for this, and C++ API doesn't allow
 	 * a ScrolledWindow without specified adjustments (unlike the C
@@ -811,6 +842,10 @@ Editor::~Editor()
 	delete _track_canvas_viewport;
 	delete _drags;
 	delete nudge_clock;
+	delete _pt_sel_start_clock;
+	delete _pt_sel_end_clock;
+	delete _pt_sel_length_clock;
+	delete _pt_edit_modes;
 	delete _region_peak_cursor;
 	delete quantize_dialog;
 	delete _summary;
@@ -1292,6 +1327,12 @@ Editor::set_session (Session *t)
 	_trigger_clip_picker.set_session (_session);
 	_application_bar.set_session (_session);
 	nudge_clock->set_session (_session);
+	if (_pt_sel_start_clock) {
+		_pt_sel_start_clock->set_session (_session);
+		_pt_sel_end_clock->set_session (_session);
+		_pt_sel_length_clock->set_session (_session);
+		update_pt_selection_clocks ();
+	}
 	_summary->set_session (_session);
 	_vsummary->set_session (_session);
 	_group_tabs->set_session (_session);
@@ -2350,7 +2391,7 @@ Editor::set_state (const XMLNode& node, int version)
 	}
 
 	int32_t el_page;
-	if (node.get_property (X_("editor-list-page"), el_page)) {
+	if (node.get_property (X_("editor-list-page"), el_page) && el_page >= 0 && el_page < _the_notebook.get_n_pages ()) {
 		_the_notebook.set_current_page (el_page);
 	} else {
 		el_page = _the_notebook.get_current_page ();
@@ -2765,17 +2806,36 @@ Editor::setup_toolbar ()
 	mouse_mode_size_group->add_widget (nudge_backward_button);
 
 	mouse_mode_hbox->set_spacing (spc);
-	mouse_mode_hbox->pack_start (smart_mode_button, false, false);
+	if (_pt_layout) {
+		/* MasterMix: Pro Tools order, zoom / grab (object) / selector / pencil */
+		ArdourButton* zoom_sel = manage (new ArdourButton);
+		zoom_sel->set_name ("mouse mode button");
+		zoom_sel->set_icon (ArdourIcon::ZoomExpand);
+		zoom_sel->set_related_action (ActionManager::get_action (X_("Editor"), X_("zoom-to-selection")));
+		mouse_mode_size_group->add_widget (*zoom_sel);
+		mouse_mode_hbox->pack_start (*zoom_sel, false, false);
+		mouse_mode_hbox->pack_start (mouse_move_button, false, false);
+		mouse_mode_hbox->pack_start (mouse_select_button, false, false);
+		mouse_mode_hbox->pack_start (mouse_draw_button, false, false);
+		/* the other tools stay reachable by keyboard and menu, not shown */
+		smart_mode_button.set_no_show_all ();
+		mouse_cut_button.set_no_show_all ();
+		mouse_timefx_button.set_no_show_all ();
+		mouse_grid_button.set_no_show_all ();
+		mouse_content_button.set_no_show_all ();
+	} else {
+		mouse_mode_hbox->pack_start (smart_mode_button, false, false);
 
-	mouse_mode_hbox->pack_start (mouse_move_button, false, false);
-	mouse_mode_hbox->pack_start (mouse_select_button, false, false);
+		mouse_mode_hbox->pack_start (mouse_move_button, false, false);
+		mouse_mode_hbox->pack_start (mouse_select_button, false, false);
 
-	mouse_mode_hbox->pack_start (mouse_cut_button, false, false);
+		mouse_mode_hbox->pack_start (mouse_cut_button, false, false);
 
-	mouse_mode_hbox->pack_start (mouse_timefx_button, false, false);
-	mouse_mode_hbox->pack_start (mouse_grid_button, false, false);
-	mouse_mode_hbox->pack_start (mouse_draw_button, false, false);
-	mouse_mode_hbox->pack_start (mouse_content_button, false, false);
+		mouse_mode_hbox->pack_start (mouse_timefx_button, false, false);
+		mouse_mode_hbox->pack_start (mouse_grid_button, false, false);
+		mouse_mode_hbox->pack_start (mouse_draw_button, false, false);
+		mouse_mode_hbox->pack_start (mouse_content_button, false, false);
+	}
 
 	mouse_mode_vbox->pack_start (*mouse_mode_hbox);
 
@@ -2787,8 +2847,16 @@ Editor::setup_toolbar ()
 	ripple_mode_selector.set_name ("mouse mode button");
 	edit_mode_selector.set_name ("mouse mode button");
 
-	mode_box->pack_start (edit_mode_selector, false, false);
-	mode_box->pack_start (ripple_mode_selector, false, false);
+	if (_pt_layout) {
+		/* MasterMix: Pro Tools 2x2 mode block instead of the Slide/Ripple dropdown */
+		_pt_edit_modes = new PTEditModes ();
+		mode_box->pack_start (*_pt_edit_modes, false, false);
+		/* ripple mode (Selected/All/Interview) remains reachable */
+		mode_box->pack_start (ripple_mode_selector, false, false);
+	} else {
+		mode_box->pack_start (edit_mode_selector, false, false);
+		mode_box->pack_start (ripple_mode_selector, false, false);
+	}
 	mode_box->pack_start (*(manage (new ArdourVSpacer ())), false, false, 3);
 	mode_box->pack_start (edit_point_selector, false, false);
 	mode_box->pack_start (*(manage (new ArdourVSpacer ())), false, false, 3);
@@ -2875,6 +2943,32 @@ Editor::setup_toolbar ()
 	follow_mode_hbox->pack_start (follow_playhead_button, false, false);
 	follow_mode_hbox->pack_start (follow_edits_button, false, false);
 
+	/* MasterMix: selection Start / End / Length clocks */
+	if (_pt_layout) {
+		_pt_sel_start_clock  = new AudioClock (X_("ptselstart"),  false, X_("selection"), false, false);
+		_pt_sel_end_clock    = new AudioClock (X_("ptselend"),    false, X_("selection"), false, false);
+		_pt_sel_length_clock = new AudioClock (X_("ptsellength"), false, X_("selection"), false, false, true);
+		_pt_sel_start_clock->set_mode (AudioClock::BBT);
+		_pt_sel_end_clock->set_mode (AudioClock::BBT);
+		_pt_sel_length_clock->set_mode (AudioClock::BBT);
+
+		Gtk::Label* l1 = manage (new Gtk::Label (_("Start")));
+		Gtk::Label* l2 = manage (new Gtk::Label (_("End")));
+		Gtk::Label* l3 = manage (new Gtk::Label (_("Length")));
+		l1->set_alignment (1.0, 0.5);
+		l2->set_alignment (1.0, 0.5);
+		l3->set_alignment (1.0, 0.5);
+
+		_pt_sel_box.set_col_spacings (4);
+		_pt_sel_box.attach (*l1, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK);
+		_pt_sel_box.attach (*_pt_sel_start_clock,  1, 2, 0, 1, Gtk::FILL, Gtk::SHRINK);
+		_pt_sel_box.attach (*l2, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK);
+		_pt_sel_box.attach (*_pt_sel_end_clock,    1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK);
+		_pt_sel_box.attach (*l3, 0, 1, 2, 3, Gtk::FILL, Gtk::SHRINK);
+		_pt_sel_box.attach (*_pt_sel_length_clock, 1, 2, 2, 3, Gtk::FILL, Gtk::SHRINK);
+		_pt_sel_box.show_all ();
+	}
+
 	/* Pack everything in... */
 
 	toolbar_hbox.set_spacing (2);
@@ -2901,6 +2995,10 @@ Editor::setup_toolbar ()
 	toolbar_hbox.pack_start (*mode_box, false, false);
 	toolbar_hbox.pack_start (*(manage (new ArdourVSpacer ())), false, false, 3);
 	toolbar_hbox.pack_start (snap_box, false, false);
+	if (_pt_sel_start_clock) {
+		toolbar_hbox.pack_start (*(manage (new ArdourVSpacer ())), false, false, 3);
+		toolbar_hbox.pack_start (_pt_sel_box, false, false);
+	}
 	toolbar_hbox.pack_start (*(manage (new ArdourVSpacer ())), false, false, 3);
 	toolbar_hbox.pack_start (*nudge_box, false, false);
 	toolbar_hbox.pack_start (_grid_box_spacer, false, false, 3);
@@ -2917,6 +3015,38 @@ Editor::setup_toolbar ()
 	_grid_box_spacer.set_no_show_all ();
 
 	toolbar_hbox.show_all ();
+
+	if (_pt_edit_modes) {
+		_pt_edit_modes->sync (Config->get_edit_mode (), snap_mode ());
+	}
+}
+
+/* MasterMix: keep the SHUFFLE/SPOT/SLIP/GRID block in step with the snap mode */
+void
+Editor::snap_mode_changed_hook ()
+{
+	if (_pt_edit_modes) {
+		_pt_edit_modes->sync (Config->get_edit_mode (), snap_mode ());
+	}
+}
+
+/* MasterMix: Start / End / Length clocks follow the time selection */
+void
+Editor::update_pt_selection_clocks ()
+{
+	if (!_pt_sel_start_clock || !_session) {
+		return;
+	}
+	if (selection->time.empty ()) {
+		Temporal::timepos_t zero (Temporal::AudioTime);
+		_pt_sel_start_clock->set (zero, true);
+		_pt_sel_end_clock->set (zero, true);
+		_pt_sel_length_clock->set_duration (Temporal::timecnt_t (Temporal::AudioTime), true);
+		return;
+	}
+	_pt_sel_start_clock->set (selection->time.start_time (), true);
+	_pt_sel_end_clock->set (selection->time.end_time (), true);
+	_pt_sel_length_clock->set_duration (selection->time.length (), true);
 }
 
 void
@@ -5511,7 +5641,11 @@ Editor::session_going_away ()
 
 	if (current_mixer_strip) {
 		if (current_mixer_strip->get_parent() != 0) {
-			content_att_left.remove ();
+			if (_pt_layout) {
+				_pt_left_hbox.remove (*current_mixer_strip);
+			} else {
+				content_att_left.remove ();
+			}
 		}
 		delete current_mixer_strip;
 		current_mixer_strip = 0;

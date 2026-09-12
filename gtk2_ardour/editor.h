@@ -107,6 +107,7 @@ namespace ARDOUR {
 
 class AnalysisWindow;
 class AudioClock;
+class PTEditModes;
 class AudioRegionView;
 class AudioStreamView;
 class AudioTimeAxisView;
@@ -579,6 +580,12 @@ private:
 	void update_join_object_range_location (double);
 
 	Gtk::VBox                 _editor_list_vbox;
+
+	/* MasterMix: Pro Tools style left column, Tracks list above Groups list,
+	 * with the editor mixer strip packed to its right. Unused when the PT layout is off. */
+	ArdourWidgets::VPane _pt_left_pane;
+	Gtk::HBox            _pt_left_hbox;
+	bool                 _pt_layout;
 	Gtk::Notebook             _the_notebook;
 	ArdourWidgets::MetaButton _notebook_tab1;
 	ArdourWidgets::MetaButton _notebook_tab2;
@@ -1761,6 +1768,8 @@ private:
 	//edit mode menu stuff
 	ArdourWidgets::ArdourDropdown ripple_mode_selector;
 	ArdourWidgets::ArdourDropdown	edit_mode_selector;
+	PTEditModes* _pt_edit_modes; /* MasterMix, 0 when the PT layout is off */
+	void snap_mode_changed_hook ();
 	void edit_mode_selection_done (ARDOUR::EditMode);
 	void ripple_mode_selection_done (ARDOUR::RippleMode);
 	void build_edit_mode_menu ();
@@ -2009,6 +2018,13 @@ private:
 	Gtk::HBox        nudge_hbox;
 	Gtk::VBox        nudge_vbox;
 	AudioClock*       nudge_clock;
+
+	/* MasterMix: Pro Tools style selection clocks, 0 when the PT layout is off */
+	AudioClock* _pt_sel_start_clock;
+	AudioClock* _pt_sel_end_clock;
+	AudioClock* _pt_sel_length_clock;
+	Gtk::Table  _pt_sel_box;
+	void        update_pt_selection_clocks ();
 
 	bool nudge_forward_release (GdkEventButton*);
 	bool nudge_backward_release (GdkEventButton*);

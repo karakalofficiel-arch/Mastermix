@@ -1319,6 +1319,8 @@ Editor::time_selection_changed ()
 			_session->clear_range_selection ();
 		}
 	}
+
+	update_pt_selection_clocks ();
 }
 
 /** Set all region actions to have a given sensitivity */
