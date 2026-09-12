@@ -26,6 +26,15 @@ Logo, icônes, splash et thème sont générés par les scripts de
 `mastermix-branding/` (`python mastermix-branding/render.py`,
 `python mastermix-branding/palette.py`).
 
+## Disposition Pro Tools
+
+La fenêtre Édition reprend l'organisation de Pro Tools : colonnes Inserts /
+Départs / E/S dans les en-têtes de pistes, modes SHUFFLE / SPOT / SLIP /
+GRID, horloges de sélection, règles multiples, listes Pistes et Groupes à
+gauche, couleurs d'en-tête par type de piste et vocabulaire Pro Tools en
+français. Pour retrouver l'interface Ardour d'origine : Préférences >
+Apparence > décocher « Disposition Pro Tools », puis redémarrer.
+
 ## Dépôt
 
 Branche `mastermix`, basée sur le tag Ardour `9.8`. Remote `upstream`

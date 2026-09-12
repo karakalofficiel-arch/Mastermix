@@ -11,6 +11,7 @@ Tous les scripts s'exécutent depuis la racine du dépôt, dans un shell MINGW64
 | `run-dev.sh [args]` | lance le binaire depuis l'arbre de build (`gtk2_ardour/ardev-win`) |
 | `package-msys2.sh` | `waf i18n_mo` + `waf install` vers `build/stage`, assemble `dist/MasterMix/`, produit `dist/MasterMix-<version>-Setup-x64.exe` (NSIS) |
 | `patches/` | copies des correctifs MinGW appliqués (aussi commités dans l'historique) |
+| `po-protools.py` | applique le vocabulaire Pro Tools aux `fr.po` (idempotent, relancer après rebase ; tests dans `tests/`) |
 
 Ordre habituel : `setup-msys2.sh`, `build-portaudio-asio.sh`, `build.sh`, `package-msys2.sh`.
 
@@ -25,6 +26,11 @@ Ordre habituel : `setup-msys2.sh`, `build-portaudio-asio.sh`, `build.sh`, `packa
   par défaut, `u8""` devient `char8_t`), `--no-dr-mingw`.
 - Traductions : activées par défaut sous Windows (`libs/ardour/globals.cc`),
   français si `LANGUAGE`/`LANG` absents (`gtk2_ardour/bundle_env_mingw.cc`).
+- Disposition Pro Tools (phase 2) : option `use-protools-layout`
+  (Préférences > Apparence, redémarrage requis). Désactivée = interface
+  Ardour d'origine. Code dans `gtk2_ardour/pt_*.{h,cc}` et patchs
+  conditionnels dans `route_time_axis.cc`, `editor.cc`, `editor_mixer.cc`,
+  `editor_rulers.cc`, `time_axis_view.cc`, `audio_time_axis.cc`.
 - Au premier démarrage d'une session, Windows peut afficher l'avertissement
   MMCSS (limite de 32 threads) : message standard d'Ardour, sans effet bloquant.
 

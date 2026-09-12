@@ -1104,7 +1104,7 @@ PTEditModes::PTEditModes ()
 	setup (_shuffle, _("SHUFFLE"), "Editor", "set-edit-ripple");
 	setup (_spot,    _("SPOT"),    "Editor", "set-edit-lock");
 	setup (_slip,    _("SLIP"),    "Editor", "set-edit-slide");
-	setup (_grid,    _("GRID"),    "Editor", "snap-magnetic");
+	setup (_grid,    _("GRID"),    "Editing", "snap-magnetic"); /* snap actions live in the "Editing" group */
 
 	attach (_shuffle, 0, 1, 0, 1, Gtk::FILL, Gtk::FILL);
 	attach (_spot,    1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
