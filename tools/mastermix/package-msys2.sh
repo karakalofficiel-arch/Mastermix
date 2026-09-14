@@ -38,6 +38,8 @@ cp "$EXE" "$DEST/bin/$PRODUCT.exe"
 cp "$PREFIX/lib/$LOWER"/*.dll "$DEST/bin/"
 cp "$PREFIX/lib/$LOWER"/*.exe "$DEST/bin/" 2>/dev/null || true
 rm -f "$DEST/bin"/ardour-*.exe
+# the VST/VST3 scanners are looked up in lib/<product>/fst then bin: keep them
+cp "$PREFIX/lib/$LOWER"/ardour-vst-scanner.exe "$PREFIX/lib/$LOWER"/ardour-vst3-scanner.exe "$DEST/bin/" 2>/dev/null || true
 cp "$PREFIX/bin"/*.exe "$DEST/bin/" 2>/dev/null || true
 
 for sub in backends engines surfaces panners LV2 vamp; do
