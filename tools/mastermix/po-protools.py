@@ -71,6 +71,7 @@ ADDITIONS = {
         "Remove send": "Retirer le départ",
         "(no bus available)": "(aucun bus disponible)",
         "Pan: %1": "Pan : %1",
+        "Send: %1 (%2)": "Départ : %1 (%2)",
         "SHUFFLE": "SHUFFLE",
         "SPOT": "SPOT",
         "SLIP": "SLIP",

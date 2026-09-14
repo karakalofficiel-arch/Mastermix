@@ -251,6 +251,7 @@ gtk2_ardour_sources = [
 	'prh_base.cc',
 	'processor_box.cc',
         'pt_edit_modes.cc',
+        'pt_send_window.cc',
         'pt_slot_model.cc',
         'pt_track_columns.cc',
         'processor_selection.cc',

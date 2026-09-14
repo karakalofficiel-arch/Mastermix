@@ -28062,3 +28062,7 @@ msgstr "GRID"
 #: mastermix
 msgid "Pro Tools layout for the Edit window (restart required)"
 msgstr "Disposition Pro Tools de la fenêtre Édition (redémarrage requis)"
+
+#: mastermix
+msgid "Send: %1 (%2)"
+msgstr "Départ : %1 (%2)"

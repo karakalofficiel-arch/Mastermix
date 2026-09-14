@@ -29,6 +29,9 @@
 #include "ardour/dB.h"
 #include "ardour/gain_control.h"
 #include "ardour/internal_send.h"
+#include "ardour/panner.h"
+#include "ardour/panner_manager.h"
+#include "ardour/panner_shell.h"
 #include "ardour/plugin_insert.h"
 #include "ardour/rc_configuration.h"
 #include "ardour/route.h"
@@ -46,9 +49,12 @@
 #include "panner_ui.h"
 #include "plugin_selector.h"
 #include "processor_box.h"
+#include "pt_send_window.h"
 #include "pt_track_columns.h"
 #include "route_ui.h"
+#include "send_ui.h"
 #include "ui_config.h"
+#include "utils.h"
 #include "widgets/tooltips.h"
 
 #include "pbd/i18n.h"
@@ -71,6 +77,7 @@ PTTrackColumns::PTTrackColumns (RouteUI& rui, Session* s)
 	, _menu (0)
 	, _pan_window (0)
 	, _pan_ui (0)
+	, _send_window (0)
 {
 	set_spacing (2);
 
@@ -129,6 +136,7 @@ PTTrackColumns::~PTTrackColumns ()
 {
 	delete _menu;
 	delete _pan_window; /* owns _pan_ui */
+	delete _send_window;
 }
 
 void
@@ -398,14 +406,35 @@ void
 PTTrackColumns::open_send (size_t i)
 {
 	std::shared_ptr<Send> s = _sends[i].send.lock ();
-	if (!s) {
+	if (!s || !ARDOUR_UI_UTILS::engine_is_running ()) {
 		return;
 	}
-	MixerStrip* ms = ARDOUR_UI::instance ()->the_mixer ()->pt_strip_by_route (_route);
-	if (ms) {
-		/* ProcessorBox opens SendUIWindow for sends */
-		ms->pt_processor_box ().edit_processor (s);
+	/* ProcessorBox maps aux sends onto the parent mixer strip instead of
+	 * opening a window; that strip is hidden from the Edit window. Aux
+	 * (internal) sends have no IO, so SendUIWindow cannot be used for them:
+	 * open the Pro Tools style PTSendWindow instead. */
+	if (_send_window && _send_window_send.lock () != s) {
+		close_send_window ();
 	}
+	if (!_send_window) {
+		if (std::dynamic_pointer_cast<InternalSend> (s)) {
+			_send_window = new PTSendWindow (_session, s, _route->name ());
+		} else {
+			_send_window = new SendUIWindow (_session, s);
+		}
+		_send_window_send = s;
+		s->DropReferences.connect (_send_window_connection, invalidator (*this), std::bind (&PTTrackColumns::close_send_window, this), gui_context ());
+	}
+	_send_window->present ();
+}
+
+void
+PTTrackColumns::close_send_window ()
+{
+	_send_window_connection.disconnect ();
+	delete _send_window;
+	_send_window = 0;
+	_send_window_send.reset ();
 }
 
 void
@@ -493,11 +522,22 @@ PTTrackColumns::pan_press (GdkEventButton* ev)
 		return false;
 	}
 	if (!_pan_window) {
+		uint32_t in  = _route->output ()->n_ports ().n_audio ();
+		uint32_t out = in;
+		if (_route->panner ()) {
+			in = _route->panner ()->in ().n_audio ();
+		}
 		_pan_window = new ArdourWindow (string_compose (_("Pan: %1"), _route->name ()));
 		_pan_ui     = new PannerUI (_session);
+		_pan_ui->set_width (Wide);
+		_pan_ui->set_available_panners (PannerManager::instance ().get_available_panners (in, out));
 		_pan_ui->set_panner (_route->panner_shell (), _route->panner ());
+		_pan_ui->setup_pan ();
+		/* PannerUI has no size of its own: give the window a usable panner */
+		_pan_ui->set_size_request (PX_SCALE (300), PX_SCALE (70));
+		_pan_window->set_default_size (PX_SCALE (320), PX_SCALE (90));
 		_pan_window->add (*_pan_ui);
-		_pan_ui->show ();
+		_pan_ui->show_all ();
 	}
 	_pan_window->present ();
 	return true;

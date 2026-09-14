@@ -54,8 +54,8 @@ cp gtk2_ardour/icons/${PRODUCT}.ico "$DEST/share/"
 # square cursors without hotspot file, as upstream does for Windows
 cp gtk2_ardour/icons/cursor_square/*.png "$DEST/share/$LOWER/icons/" 2>/dev/null || true
 
-# 3. MinGW runtime DLLs the exe, libs and plugins depend on
-ntldd -R "$DEST/bin/$PRODUCT.exe" "$DEST"/bin/*.dll "$DEST/lib/$LOWER"/*/*.dll 2>/dev/null \
+# 3. MinGW runtime DLLs the exes (MasterMix, ardour9-lua, session utils), libs and plugins depend on
+ntldd -R "$DEST"/bin/*.exe "$DEST"/bin/*.dll "$DEST/lib/$LOWER"/*/*.dll 2>/dev/null \
 	| grep -io '[a-z]:.msys64.mingw64.bin.[^ ]*\.dll' | sort -u | while read -r dll; do
 		cp -n "$(cygpath -u "$dll")" "$DEST/bin/" 2>/dev/null || true
 	done

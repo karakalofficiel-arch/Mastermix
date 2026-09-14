@@ -83,9 +83,12 @@ private:
 	Gtk::Menu*    _menu;
 	ArdourWindow* _pan_window;
 	PannerUI*     _pan_ui;
+	ArdourWindow* _send_window; /* SendUIWindow or PTSendWindow */
+	std::weak_ptr<ARDOUR::Send> _send_window_send;
 
 	PBD::ScopedConnectionList _route_connections;
 	PBD::ScopedConnectionList _processor_connections;
+	PBD::ScopedConnection     _send_window_connection;
 
 	void setup_slot (ArdourWidgets::ArdourButton&, int width_px);
 	void update_insert_buttons ();
@@ -105,6 +108,7 @@ private:
 	void popup_insert_menu (size_t, GdkEventButton*);
 
 	void open_send (size_t);
+	void close_send_window ();
 	void popup_send_target_menu (GdkEventButton*);
 	void add_send_to (std::weak_ptr<ARDOUR::Route>);
 	void remove_send (size_t);
