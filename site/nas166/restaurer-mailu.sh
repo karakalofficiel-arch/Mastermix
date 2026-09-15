@@ -25,27 +25,27 @@ P_TEST=$(gen); P_GESTION=$(gen); P_INSCR=$(gen)
 printf '%s\n%s\n%s\n%s\n' "$P_MATUNE" "$P_TEST" "$P_GESTION" "$P_INSCR" | ssh -o ConnectTimeout=20 karakal166 '
 read PM; read PT; read PG; read PI
 cd /mnt/karakalia/mailu
-M="sudo docker compose exec -T admin flask mailu"
+M() { sudo docker compose exec -T admin flask mailu "$@"; }
 echo "== domaines"
-$M domain besancon.vip 2>&1 | tail -1
-$M domain karalook.org 2>&1 | tail -1
+M domain besancon.vip 2>&1 | tail -1
+M domain karalook.org 2>&1 | tail -1
 echo "== administrateur global"
-$M admin admin besancon.vip "Doudia101877+" 2>&1 | tail -1
+M admin admin besancon.vip "Doudia101877+" 2>&1 | tail -1
 echo "== comptes"
-$M user agent besancon.vip "Bes2026Agent!kR9" 2>&1 | tail -1
-$M user test besancon.vip "$PT" 2>&1 | tail -1
-$M user gestion besancon.vip "$PG" 2>&1 | tail -1
-$M user inscription-test besancon.vip "$PI" 2>&1 | tail -1
-$M user matune karalook.org "$PM" 2>&1 | tail -1
+M user agent besancon.vip "Bes2026Agent!kR9" 2>&1 | tail -1
+M user test besancon.vip "$PT" 2>&1 | tail -1
+M user gestion besancon.vip "$PG" 2>&1 | tail -1
+M user inscription-test besancon.vip "$PI" 2>&1 | tail -1
+M user matune karalook.org "$PM" 2>&1 | tail -1
 echo "== état de la base"
-$M config-export --dns domain user 2>/dev/null | grep -E "^  - name:|email:|global_admin|dns_dkim" | sed -E "s/(p=[A-Za-z0-9+\/]{24}).*/\1…/"
+M config-export --dns domain user 2>/dev/null | grep -E "^  - name:|email:|global_admin|dns_dkim" | sed -E "s/(p=[A-Za-z0-9+\/]{24}).*/\1…/"
 echo "== connexions IMAP"
 for cred in "admin@besancon.vip:Doudia101877+" "agent@besancon.vip:Bes2026Agent!kR9" "matune@karalook.org:$PM" "test@besancon.vip:$PT" "gestion@besancon.vip:$PG" "inscription-test@besancon.vip:$PI"; do
   u=${cred%%:*}
   r=$(curl -s -m 10 -k --url "imaps://192.168.1.166:993/INBOX" --user "$cred" -X "STATUS INBOX (MESSAGES)" 2>&1 | tr -d "\r" | grep -oE "MESSAGES [0-9]+")
   echo "$u -> ${r:-ECHEC}"
 done
-echo "== .env de l application besancon.vip"
+echo "== .env de l application besancon.vip (SMTP_PASS doit valoir Doudia101877+ ; sinon : sudo sed -i s/^SMTP_PASS=.*/SMTP_PASS=Doudia101877+/ /mnt/karakalia/besancon-vip/.env puis docker compose restart api)"
 sudo grep -cE "^SMTP_PASS=Doudia101877\+$" /mnt/karakalia/besancon-vip/.env | sed "s/^1$/SMTP_PASS conforme à la doc/;s/^0$/SMTP_PASS DIFFERENT de la doc (bug + en trop ?) : à corriger dans .env/"
 sudo grep -cE "^AGENT_SMTP_PASS=Bes2026Agent!kR9$" /mnt/karakalia/besancon-vip/.env | sed "s/^1$/AGENT_SMTP_PASS conforme/;s/^0$/AGENT_SMTP_PASS DIFFERENT : à corriger dans .env/"
 echo "== jeton API Mailu (à coller dans mastermix.fr/admin > Réglages)"
