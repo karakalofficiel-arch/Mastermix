@@ -152,3 +152,5 @@ waf3-*
 
 # misc custom files git should ignore
 /local
+site/www/telechargements/*.exe
+site/www/telechargements/*.zip

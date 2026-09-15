@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Manrope:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; background: #0a0a0a; color: #ecece6; font-family: Manrope, "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #c6f04a; text-decoration: none; } a:hover { color: #e3ff8a; }
+    .btn:hover { background: #c6f04a; }
+  </style>
+</helmet>
+
+<div style="width: 390px; min-height: 2980px; background: #0a0a0a; color: #ecece6; font-family: Manrope, 'Segoe UI', system-ui, sans-serif; display: flex; flex-direction: column;">
+
+  <!-- Barre -->
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 20px; border-bottom: 1px solid #1c1c1c;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <img src="logo.svg" alt="MasterMix" style="width: 32px; height: 32px; border-radius: 8px;">
+      <span style="font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 800; font-size: 18px; color: #f4f4ee;">MasterMix</span>
+    </div>
+    <a class="btn" href="#telecharger" style="display: inline-flex; align-items: center; background: #a4de02; color: #0a0a0a; font-weight: 700; padding: 10px 14px; border-radius: 8px; font-size: 14px;">Télécharger</a>
+  </div>
+
+  <!-- Accueil -->
+  <div style="display: flex; flex-direction: column; padding: 48px 20px 0; gap: 16px;">
+    <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #a4de02;">
+      <span style="width: 7px; height: 7px; border-radius: 50%; background: #a4de02; display: inline-block;"></span>
+      Station audio pour Windows
+    </div>
+    <h1 style="margin: 0; font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 800; font-size: 60px; line-height: 0.95; letter-spacing: -0.03em; color: #f4f4ee;">MasterMix</h1>
+    <p style="margin: 0; font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 22px; line-height: 1.3; color: #d6d6cf; text-wrap: pretty;">La station de travail audio professionnelle, <span style="color: #a4de02;">facile</span>, pour mixer et masteriser.</p>
+    <a class="btn" href="#telecharger" style="display: flex; justify-content: center; align-items: center; gap: 10px; background: #a4de02; color: #0a0a0a; font-weight: 700; padding: 16px 20px; border-radius: 10px; font-size: 16px; margin-top: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"></path><path d="M6 11l6 6 6-6"></path><path d="M4 21h16"></path></svg>
+      Télécharger pour Windows
+    </a>
+    <span style="font-size: 13px; color: #8f8f88; text-align: center;">Gratuit · Version 9.8.24 · Windows 10 / 11, 64 bits</span>
+  </div>
+
+  <!-- Capture -->
+  <div style="padding: 32px 20px 0;">
+    <div style="border-radius: 10px; overflow: hidden; border: 1px solid #2a3a08; box-shadow: 0 20px 60px rgba(0,0,0,0.7);">
+      <img src="editeur.jpg" alt="Fenêtre d'édition de MasterMix" style="display: block; width: 100%; height: auto;">
+    </div>
+  </div>
+
+  <!-- Trois promesses -->
+  <div style="padding: 64px 20px 0; display: flex; flex-direction: column; gap: 24px;">
+    <h2 style="margin: 0; font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; color: #f4f4ee; text-wrap: pretty;">Facile à prendre en main, sérieuse jusqu'au master.</h2>
+    <div style="display: flex; flex-direction: column; gap: 14px; padding: 24px; background: #121212; border: 1px solid #222; border-radius: 12px;">
+      <h3 style="margin: 0; font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 20px; color: #a4de02;">Facile</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #a8a8a0;">Inserts, départs et entrées-sorties directement dans l'en-tête de chaque piste. Modes SHUFFLE, SPOT, SLIP et GRID. Interface en français.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 14px; padding: 24px; background: #121212; border: 1px solid #222; border-radius: 12px;">
+      <h3 style="margin: 0; font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 20px; color: #a4de02;">Mixer</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #a8a8a0;">Console complète : faders, départs, bus, VCA, automation, pistes illimitées. Greffons VST3, VST2 et LV2.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 14px; padding: 24px; background: #121212; border: 1px solid #222; border-radius: 12px;">
+      <h3 style="margin: 0; font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 20px; color: #a4de02;">Masteriser</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #a8a8a0;">Mesure de niveau et de loudness, montage non destructif, export multi-formats en un passage. Pilotes ASIO.</p>
+    </div>
+  </div>
+
+  <!-- Console -->
+  <div style="padding: 64px 20px 0; display: flex; flex-direction: column; gap: 16px;">
+    <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #a4de02;">La console</div>
+    <h2 style="margin: 0; font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 28px; line-height: 1.1; letter-spacing: -0.02em; color: #f4f4ee;">Une tranche par piste, tout sous les yeux.</h2>
+    <div style="border-radius: 10px; overflow: hidden; border: 1px solid #2a3a08;">
+      <img src="mixer.jpg" alt="Console de mixage de MasterMix" style="display: block; width: 100%; height: auto;">
+    </div>
+    <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #a8a8a0;">Greffons, départs, panoramique, fader et vumètre alignés sur chaque tranche. Huit scènes de mixage rappelables d'une touche.</p>
+  </div>
+
+  <!-- Téléchargement -->
+  <div id="telecharger" style="margin: 64px 20px 0; padding: 28px 24px; background: #121212; border: 1px solid #222; border-radius: 14px; display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="margin: 0; font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 26px; line-height: 1.1; letter-spacing: -0.02em; color: #f4f4ee;">Télécharger MasterMix 9.8.24</h2>
+    <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #a8a8a0;">Installeur Windows 10 et 11, 64 bits. Gratuit, sans compte ni abonnement.</p>
+    <a class="btn" href="telechargements/MasterMix-9.8.24-Setup-x64.exe" style="display: flex; justify-content: center; align-items: center; gap: 10px; background: #a4de02; color: #0a0a0a; font-weight: 700; padding: 16px 20px; border-radius: 10px; font-size: 15px;">Installeur · 65 Mo</a>
+    <div style="font-size: 12px; font-weight: 600; color: #d6d6cf;">Empreinte SHA-256</div>
+    <code style="display: block; font-family: Consolas, 'Cascadia Mono', ui-monospace, monospace; font-size: 11px; line-height: 1.5; color: #a8a8a0; background: #0a0a0a; border: 1px solid #222; border-radius: 8px; padding: 10px 12px; word-break: break-all;">c10463889c1534001ac940e48e7ab32199704b866b3d25f4f4e8ef8bf95135b1</code>
+    <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #8f8f88;">Windows SmartScreen peut afficher un avertissement au premier lancement : l'installeur n'est pas signé par un certificat commercial. Choisissez « Informations complémentaires » › « Exécuter quand même ».</p>
+  </div>
+
+  <!-- Configuration -->
+  <div style="padding: 64px 20px 0; display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="margin: 0; font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 28px; line-height: 1.1; letter-spacing: -0.02em; color: #f4f4ee;">Configuration requise</h2>
+    <div style="display: flex; flex-direction: column; font-size: 15px;">
+      <div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #222;"><span style="color: #8f8f88;">Système</span><span style="text-align: right;">Windows 10 / 11, 64 bits</span></div>
+      <div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #222;"><span style="color: #8f8f88;">Processeur</span><span style="text-align: right;">x86-64, 4 cœurs recommandés</span></div>
+      <div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #222;"><span style="color: #8f8f88;">Mémoire</span><span style="text-align: right;">8 Go recommandés</span></div>
+      <div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #222;"><span style="color: #8f8f88;">Disque</span><span style="text-align: right;">400 Mo, plus vos sessions</span></div>
+      <div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #222;"><span style="color: #8f8f88;">Audio</span><span style="text-align: right;">ASIO recommandé</span></div>
+      <div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 0;"><span style="color: #8f8f88;">Greffons</span><span style="text-align: right;">VST3, VST2, LV2</span></div>
+    </div>
+  </div>
+
+  <!-- Pied -->
+  <div style="margin-top: 64px; padding: 28px 20px 36px; border-top: 1px solid #1c1c1c; display: flex; flex-direction: column; gap: 12px; font-size: 12px; line-height: 1.6; color: #6f6f68;">
+    <div style="display: flex; align-items: center; gap: 8px; color: #a8a8a0;">
+      <img src="logo.svg" alt="" style="width: 20px; height: 20px; border-radius: 5px;">
+      <span style="font-family: Syne, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 14px; color: #d6d6cf;">MasterMix</span>
+      <span>· Ahmed Hadjadj, 2026</span>
+    </div>
+    <a href="mailto:contact@mastermix.fr" style="color: #a8a8a0;">contact@mastermix.fr</a>
+    <p style="margin: 0; text-wrap: pretty;">Logiciel libre, licence GNU GPL v2 ou ultérieure ; code source sur demande. Construit sur le moteur audio Ardour, © Paul Davis et contributeurs, sans affiliation ; « Ardour » est une marque de Paul Davis.</p>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

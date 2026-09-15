@@ -1,0 +1,22 @@
+services:
+  web:
+    image: python:3.12-alpine
+    container_name: mastermix-site
+    restart: unless-stopped
+    user: "1000:1000"
+    working_dir: /site
+    command: ["python3", "/site/app/server.py"]
+    environment:
+      MM_HOST: "0.0.0.0"
+      MM_PORT: "8095"
+      MM_DATA: /site/data
+      MM_WWW: /site/www
+      MM_SITE_URL: https://mastermix.fr
+      MM_DOMAINE: mastermix.fr
+      PYTHONUNBUFFERED: "1"
+    ports:
+      - "192.168.1.166:8095:8095"
+    volumes:
+      - /mnt/karakalia/mastermix-site/app:/site/app:ro
+      - /mnt/karakalia/mastermix-site/data:/site/data
+      - /mnt/karakalia/mastermix-site/www:/site/www
