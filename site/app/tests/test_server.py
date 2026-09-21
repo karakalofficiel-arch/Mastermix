@@ -63,7 +63,7 @@ class TestServeur(unittest.TestCase):
         cls.www = base / "www"
         shutil.copytree(RACINE / "www", cls.www, ignore=shutil.ignore_patterns("*.exe", "*.zip"))
         (cls.www / "telechargements").mkdir(exist_ok=True)
-        (cls.www / "telechargements" / "MasterMix-9.8.24-Setup-x64.exe").write_bytes(b"MZ" + b"\0" * 3000)
+        (cls.www / "telechargements" / "MasterMix-2.15-Setup-x64.exe").write_bytes(b"MZ" + b"\0" * 3000)
         server.FABRIQUES["imap"] = FauxImap
         server.FABRIQUES["smtp"] = FauxSmtp
         server.FABRIQUES["adresse_mailu"] = "127.0.0.1"
@@ -107,11 +107,11 @@ class TestServeur(unittest.TestCase):
     def test_statique_et_telechargement(self):
         r = self.c.req("GET", "/logo.svg")
         self.assertEqual(r.getheader("Content-Type"), "image/svg+xml")
-        r = self.c.req("HEAD", "/telechargements/MasterMix-9.8.24-Setup-x64.exe")
+        r = self.c.req("HEAD", "/telechargements/MasterMix-2.15-Setup-x64.exe")
         self.assertEqual(r.status, 200)
         self.assertEqual(r.getheader("Content-Length"), "3002")
         self.assertIn("attachment", r.getheader("Content-Disposition"))
-        r = self.c.req("GET", "/telechargements/MasterMix-9.8.24-Setup-x64.exe", entetes={"Range": "bytes=0-1"})
+        r = self.c.req("GET", "/telechargements/MasterMix-2.15-Setup-x64.exe", entetes={"Range": "bytes=0-1"})
         self.assertEqual(r.status, 206)
         self.assertEqual(r.donnees, b"MZ")
         self.assertEqual(r.getheader("Content-Range"), "bytes 0-1/3002")
@@ -187,7 +187,7 @@ class TestServeur(unittest.TestCase):
         r = c.req("POST", "/admin/api/fichiers/media/morceau?nom=a.svg&id=sv&indice=0&total=1", b"<svg onload='x'></svg>", {"Content-Type": "application/octet-stream"}, brut=True)
         self.assertEqual(r.status, 400)
         self.assertEqual(c.json("DELETE", "/admin/api/fichiers/telechargements/Test-Setup.exe")[0], 200)
-        self.assertEqual(c.json("DELETE", "/admin/api/fichiers/telechargements/MasterMix-9.8.24-Setup-x64.exe")[0], 409)
+        self.assertEqual(c.json("DELETE", "/admin/api/fichiers/telechargements/MasterMix-2.15-Setup-x64.exe")[0], 409)
 
     def test_reglages_et_mot_de_passe(self):
         c = self.admin()
