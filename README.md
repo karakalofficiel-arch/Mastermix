@@ -1,11 +1,12 @@
 # MasterMix
 
-> **MasterMix 2 est disponible.** La version courante (2.15) est une
-> nouvelle base, propriétaire, en français, avec la disposition Pro Tools
-> et les sept plugins VST3 Mastersuite inclus dans l'installeur :
-> https://mastermix.fr — `MasterMix-2.15-Setup-x64.exe`, empreinte SHA-256
-> dans `telechargements/SHA256SUMS.txt`. Ce dépôt contient MasterMix 1.x
-> (9.8.24), dérivée d'Ardour sous GPL, et le site mastermix.fr (`site/`).
+> **MasterMix 2 est disponible.** Nouvelle base, propriétaire, en français,
+> disposition Pro Tools, sept plugins VST3 Mastersuite inclus dans
+> l'installeur, mises à jour proposées par le logiciel. Licence à vie offerte
+> aux 100 premiers utilisateurs, 10 € ensuite. Téléchargement et empreintes
+> SHA-256 : https://mastermix.fr (version courante 2.16). Ce dépôt contient
+> MasterMix 1.x (9.8.24), dérivée d'Ardour sous GPL, et le site mastermix.fr
+> (`site/`).
 
 MasterMix 1.x est une station audionumérique (DAW) pour Windows, dérivée
 d'[Ardour](https://ardour.org/) 9.8. Elle conserve l'intégralité des

@@ -18,7 +18,7 @@ CONTENU_DEFAUT = {
     "site": {
         "titre": "MasterMix",
         "titre_page": "MasterMix — la station de travail audio professionnelle, facile, pour mixer et masteriser",
-        "description": "MasterMix 2 est une station de travail audio professionnelle et facile pour Windows : enregistrez, mixez et masterisez dans une seule fenêtre, en français, avec les sept plugins Mastersuite inclus.",
+        "description": "MasterMix 2 est une station de travail audio professionnelle et facile pour Windows : enregistrez, mixez et masterisez dans une seule fenêtre, en français, avec les sept plugins Mastersuite inclus. Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite.",
         "contact": "contact@mastermix.fr",
     },
     "accueil": {
@@ -26,7 +26,7 @@ CONTENU_DEFAUT = {
         "titre": "MasterMix",
         "accroche": "La station de travail audio professionnelle, *facile*, pour mixer et masteriser.",
         "bouton": "Télécharger pour Windows",
-        "meta": "Version 2.15 · Windows 10 / 11, 64 bits · Mastersuite incluse",
+        "meta": "Version 2.16 · Windows 10 / 11, 64 bits · Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite",
         "capture": "editeur.jpg",
         "capture_alt": "Fenêtre d'édition de MasterMix : pistes, inserts, départs et entrées-sorties",
         "legende": "Fenêtre d'édition : chaque piste affiche ses inserts, ses départs et ses entrées-sorties.",
@@ -53,11 +53,11 @@ CONTENU_DEFAUT = {
         ],
     },
     "telechargement": {
-        "titre": "Télécharger MasterMix 2.15",
-        "texte": "Installeur pour Windows 10 et 11, 64 bits, avec les sept plugins VST3 Mastersuite. Sans compte ni abonnement.",
-        "fichier": "MasterMix-2.15-Setup-x64.exe",
-        "taille": 13834347,
-        "sha256": "5d35832793ca9100ab3fa5b767aa0521f82e7d83ee07758e232b2f55305edfd4",
+        "titre": "Télécharger MasterMix 2.16",
+        "texte": "Installeur pour Windows 10 et 11, 64 bits, avec les sept plugins VST3 Mastersuite. Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite. Sans compte ni abonnement ; MasterMix vous propose lui-même les mises à jour suivantes.",
+        "fichier": "MasterMix-2.16-Setup-x64.exe",
+        "taille": 13833430,
+        "sha256": "ffbd1f56ca51cb271ace9aa133caee2e83a276b3ac3d60391d18e433335e6db8",
         "note": "Au premier lancement, Windows SmartScreen peut afficher un avertissement : l'installeur n'est pas signé par un certificat commercial. Vérifiez l'empreinte, puis choisissez « Informations complémentaires » › « Exécuter quand même ».",
     },
     "configuration": {

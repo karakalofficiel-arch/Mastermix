@@ -186,6 +186,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.envoyer(200, render.page_accueil(APP.store.lire_contenu(), APP.store.lister_pages()), entetes=[("Cache-Control", "public, max-age=300")])
             if chemin == "/healthz":
                 return self.envoyer(200, "ok\n", "text/plain")
+            if chemin == "/maj/mastermix2.json":
+                return self.manifeste_maj()
             if chemin.startswith("/p/"):
                 page = APP.store.lire_page(chemin[3:])
                 if not page or not page.get("visible"):
@@ -201,6 +203,36 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:  # noqa: BLE001 - dernier filet, on journalise sans exposer
             APP.store.journal(self.ip, "erreur interne %s: %r" % (self.path, e))
             return self.erreur(500, "Erreur interne")
+
+    # --- mise à jour de MasterMix 2 -----------------------------------------
+    def manifeste_maj(self):
+        """Manifeste lu par MasterMix 2 au lancement (Aide > Vérifier les mises à jour).
+
+        Construit depuis la section Téléchargement du contenu : la version est celle
+        du nom de fichier publié (MasterMix-<version>-Setup-x64.exe), l'URL, la taille
+        et l'empreinte SHA-256 sont celles affichées sur la page. 404 tant que le
+        fichier publié n'est pas un installeur MasterMix 2.
+        """
+        t = APP.store.lire_contenu().get("telechargement", {})
+        fichier = str(t.get("fichier") or "")
+        m = re.fullmatch(r"MasterMix-(\d+(?:\.\d+)+)-Setup-x64\.exe", fichier)
+        if not m or not m.group(1).startswith("2."):
+            return self.erreur(404, "Aucune mise à jour publiée")
+        try:
+            taille = int(t.get("taille") or 0)
+        except (TypeError, ValueError):
+            taille = 0
+        if taille <= 0 or not t.get("sha256"):
+            return self.erreur(404, "Aucune mise à jour publiée")
+        manifeste = {
+            "version": m.group(1),
+            "fichier": fichier,
+            "url": "%s/telechargements/%s" % (SITE_URL, fichier),
+            "taille": taille,
+            "sha256": str(t["sha256"]).strip().lower(),
+            "notes": str(t.get("notes_maj") or ""),
+        }
+        return self.json_(manifeste, entetes=[("Cache-Control", "no-store")])
 
     # --- statique ----------------------------------------------------------
     def statique(self, chemin):

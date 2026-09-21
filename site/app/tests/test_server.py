@@ -1,3 +1,4 @@
+import copy
 import hashlib
 import http.client
 import json
@@ -63,7 +64,7 @@ class TestServeur(unittest.TestCase):
         cls.www = base / "www"
         shutil.copytree(RACINE / "www", cls.www, ignore=shutil.ignore_patterns("*.exe", "*.zip"))
         (cls.www / "telechargements").mkdir(exist_ok=True)
-        (cls.www / "telechargements" / "MasterMix-2.15-Setup-x64.exe").write_bytes(b"MZ" + b"\0" * 3000)
+        (cls.www / "telechargements" / "MasterMix-2.16-Setup-x64.exe").write_bytes(b"MZ" + b"\0" * 3000)
         server.FABRIQUES["imap"] = FauxImap
         server.FABRIQUES["smtp"] = FauxSmtp
         server.FABRIQUES["adresse_mailu"] = "127.0.0.1"
@@ -107,15 +108,40 @@ class TestServeur(unittest.TestCase):
     def test_statique_et_telechargement(self):
         r = self.c.req("GET", "/logo.svg")
         self.assertEqual(r.getheader("Content-Type"), "image/svg+xml")
-        r = self.c.req("HEAD", "/telechargements/MasterMix-2.15-Setup-x64.exe")
+        r = self.c.req("HEAD", "/telechargements/MasterMix-2.16-Setup-x64.exe")
         self.assertEqual(r.status, 200)
         self.assertEqual(r.getheader("Content-Length"), "3002")
         self.assertIn("attachment", r.getheader("Content-Disposition"))
-        r = self.c.req("GET", "/telechargements/MasterMix-2.15-Setup-x64.exe", entetes={"Range": "bytes=0-1"})
+        r = self.c.req("GET", "/telechargements/MasterMix-2.16-Setup-x64.exe", entetes={"Range": "bytes=0-1"})
         self.assertEqual(r.status, 206)
         self.assertEqual(r.donnees, b"MZ")
         self.assertEqual(r.getheader("Content-Range"), "bytes 0-1/3002")
         self.assertEqual(self.c.req("GET", "/telechargements/").status, 404)
+
+    def test_manifeste_de_mise_a_jour(self):
+        from app import render
+        t = render.CONTENU_DEFAUT["telechargement"]
+        code, d = self.c.json("GET", "/maj/mastermix2.json")
+        self.assertEqual(code, 200)
+        version = t["fichier"].split("-")[1]
+        self.assertEqual(d["version"], version)
+        self.assertEqual(d["fichier"], t["fichier"])
+        self.assertEqual(d["url"], server.SITE_URL + "/telechargements/" + t["fichier"])
+        self.assertEqual(d["taille"], t["taille"])
+        self.assertEqual(d["sha256"], t["sha256"])
+        self.assertEqual(d["notes"], "")
+        r = self.c.req("GET", "/maj/mastermix2.json")
+        self.assertEqual(r.getheader("Cache-Control"), "no-store")
+        # Un fichier publié qui n'est pas un installeur MasterMix 2 : pas de manifeste.
+        c = self.admin()
+        contenu = c.json("GET", "/admin/api/contenu")[1]["contenu"]
+        modifie = copy.deepcopy(contenu)
+        modifie["telechargement"]["fichier"] = "MasterMix-9.8.24-Setup-x64.exe"
+        self.assertEqual(c.json("PUT", "/admin/api/contenu", modifie)[0], 200)
+        try:
+            self.assertEqual(self.c.req("GET", "/maj/mastermix2.json").status, 404)
+        finally:
+            self.assertEqual(c.json("PUT", "/admin/api/contenu", contenu)[0], 200)
 
     # --- admin -------------------------------------------------------------
     def test_admin_page_et_acces(self):
@@ -187,7 +213,7 @@ class TestServeur(unittest.TestCase):
         r = c.req("POST", "/admin/api/fichiers/media/morceau?nom=a.svg&id=sv&indice=0&total=1", b"<svg onload='x'></svg>", {"Content-Type": "application/octet-stream"}, brut=True)
         self.assertEqual(r.status, 400)
         self.assertEqual(c.json("DELETE", "/admin/api/fichiers/telechargements/Test-Setup.exe")[0], 200)
-        self.assertEqual(c.json("DELETE", "/admin/api/fichiers/telechargements/MasterMix-2.15-Setup-x64.exe")[0], 409)
+        self.assertEqual(c.json("DELETE", "/admin/api/fichiers/telechargements/MasterMix-2.16-Setup-x64.exe")[0], 409)
 
     def test_reglages_et_mot_de_passe(self):
         c = self.admin()
