@@ -26,7 +26,7 @@ if [ "$WHAT" = all ] || [ "$WHAT" = 166 ]; then
   ssh karakal166 "sudo mkdir -p $DEST/data $DEST/www/media $DEST/www/telechargements"
   # code (app/ sans tests ni caches), fichiers publics de base, composes, nginx.conf de secours
   tar czf - -C "$HERE" --exclude='__pycache__' --exclude='app/tests' \
-      app www/index.html www/logo.svg www/editeur.jpg www/mixer.jpg \
+      app www/index.html www/logo.svg www/editeur.jpg www/mixer.jpg www/plugins \
       -C "$HERE/nas166" docker-compose.yml docker-compose.nginx.yml nginx.conf \
     | ssh karakal166 "sudo tar xzf - -C $DEST --overwrite"
   # installeurs : uniquement ceux qui manquent côté serveur

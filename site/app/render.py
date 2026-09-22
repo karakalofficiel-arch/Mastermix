@@ -52,6 +52,21 @@ CONTENU_DEFAUT = {
             "Mastersuite : huit plugins de mixage et de mastering inclus, accordeur compris",
         ],
     },
+    "plugins": {
+        "surtitre": "Mastersuite",
+        "titre": "Huit plugins inclus, du premier accord au master.",
+        "texte": "Tous en VST3, habillage MasterMix, installés avec la station. Ils fonctionnent aussi dans tout autre hôte VST3 64 bits.",
+        "liste": [
+            {"nom": "MasterQ", "role": "Égaliseur", "capture": "plugins/masterq.jpg", "texte": "Égaliseur paramétrique 16 bandes : courbe interactive à la souris, analyseur de spectre en temps réel, cloches, plateaux, coupe-bas et coupe-haut. Pour sculpter une piste ou corriger un master."},
+            {"nom": "MasterComp 76", "role": "Compresseur", "capture": "plugins/mastercomp76.jpg", "texte": "Compresseur FET inspiré du 1176, une seule rangée de commandes : entrée, sortie, attaque, relâchement, ratios 4 / 8 / 12 / 20 et mode « tous enfoncés ». Circuit transistor ou lampe. Voix, batterie, basse."},
+            {"nom": "MasterL", "role": "Limiteur", "capture": "plugins/masterl.jpg", "texte": "Limiteur true-peak pour le master : plafond, gain d'entrée, relâchement, mesure de loudness (LUFS) et de crête vraie intégrée. Ce qui sort ne dépasse jamais le plafond, quelle que soit la plateforme."},
+            {"nom": "MasterClean", "role": "Restauration", "capture": "plugins/masterclean.jpg", "texte": "Restauration audio : réduction de bruit large bande, suppression de ronflette 50 / 60 Hz et de ses harmoniques. Pour rattraper une prise bruyante ou un enregistrement ancien."},
+            {"nom": "MasterFlem", "role": "Assistant de mastering", "capture": "plugins/masterflem.jpg", "texte": "Assistant de mastering : analyse le mix, vise une cible (streaming, club, radio) et règle sa chaîne égaliseur, compresseur et limiteur pour l'atteindre. Comparaison A/B, réglages modifiables à la main."},
+            {"nom": "MasteRev", "role": "Réverbe", "capture": "plugins/masterev.jpg", "texte": "Réverbe algorithmique à réseau de huit lignes : taille, pré-délai, amortissement, largeur, mix. Douze préconfigurations voix et instruments qui sonnent juste dès le choix, en insert ou sur un bus."},
+            {"nom": "MasterDelay", "role": "Délai", "capture": "plugins/masterdelay.jpg", "texte": "Délai stéréo synchronisé au tempo ou libre, ping-pong, retour filtré et saturé en douceur, modulation type bande. Douze préconfigurations : slapback, doublage, écho pointé, dub."},
+            {"nom": "MasterTune", "role": "Accordeur", "capture": "plugins/mastertune.jpg", "texte": "Accordeur chromatique à poser sur la piste : note, écart en cents sur une aiguille, fréquence mesurée, La de référence réglable, notation C D E ou Do Ré Mi, sortie muette pendant l'accordage. Précis au cent."},
+        ],
+    },
     "telechargement": {
         "titre": "Télécharger MasterMix 2.17",
         "texte": "Installeur pour Windows 10 et 11, 64 bits, avec les sept plugins VST3 Mastersuite. Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite. Sans compte ni abonnement ; MasterMix vous propose lui-même les mises à jour suivantes.",
@@ -84,6 +99,7 @@ CHAMPS = {
     "accueil": ["surtitre", "titre", "accroche", "bouton", "meta", "capture", "capture_alt", "legende"],
     "promesses": ["titre", "sous_titre", "cartes"],
     "console": ["surtitre", "titre", "texte", "capture", "capture_alt", "points"],
+    "plugins": ["surtitre", "titre", "texte", "liste"],
     "telechargement": ["titre", "texte", "fichier", "taille", "sha256", "note"],
     "configuration": ["titre", "texte", "lignes"],
     "pied": ["signature", "licence"],
@@ -128,6 +144,12 @@ def _valeurs(contenu, pages):
         v["promesses.cartes.%d.titre" % i] = e(carte.get("titre", ""))
         v["promesses.cartes.%d.texte" % i] = e(carte.get("texte", ""))
     v["console.points"] = "\n        ".join("<div>%s</div>" % e(p) for p in c.get("console", {}).get("points", []))
+    v["plugins.liste"] = "".join(
+        '      <div class="plug"><div class="shot"><img src="%s" alt="%s" loading="lazy"></div>'
+        '<h3>%s<span>%s</span></h3><p>%s</p></div>\n'
+        % (e(p.get("capture", "")), e(p.get("nom", "")), e(p.get("nom", "")), e(p.get("role", "")), e(p.get("texte", "")))
+        for p in c.get("plugins", {}).get("liste", [])
+    )
     v["configuration.lignes"] = "".join(
         "      <div><span>%s</span><span>%s</span></div>\n" % (e(l[0]), e(l[1]))
         for l in c.get("configuration", {}).get("lignes", []) if len(l) == 2

@@ -267,6 +267,7 @@ function chargerContenu(){
       d.champs[section].forEach(function(cle){
         var v = contenu[section][cle];
         if (cle === 'cartes') { v.forEach(function(c, i){ h += '<div class="row"><div>' + champ(section, 'cartes.' + i + '.titre', c.titre) + '</div><div style="flex:3 1 300px">' + champ(section, 'cartes.' + i + '.texte', c.texte) + '</div></div>'; }); }
+        else if (cle === 'liste') { v.forEach(function(c, i){ h += '<div class="row"><div>' + champ(section, 'liste.' + i + '.nom', c.nom) + champ(section, 'liste.' + i + '.role', c.role) + champ(section, 'liste.' + i + '.capture', c.capture) + '</div><div style="flex:3 1 300px">' + champ(section, 'liste.' + i + '.texte', c.texte) + '</div></div>'; }); }
         else if (cle === 'points') { h += '<label>points (une ligne par point)</label><textarea id="f-console-points">' + esc(v.join('\n')) + '</textarea>'; }
         else if (cle === 'lignes') { h += '<label>lignes (libellé | valeur, une par ligne)</label><textarea id="f-configuration-lignes">' + esc(v.map(function(l){ return l[0] + ' | ' + l[1]; }).join('\n')) + '</textarea>'; }
         else h += champ(section, cle, v);
@@ -283,6 +284,7 @@ function lireContenu(){
     if (cle === 'points') c.console.points = el.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
     else if (cle === 'lignes') c.configuration.lignes = el.value.split('\n').map(function(s){ var i = s.indexOf('|'); return i < 0 ? null : [s.slice(0, i).trim(), s.slice(i + 1).trim()]; }).filter(Boolean);
     else if (cle.indexOf('cartes.') === 0) { var q = cle.split('.'); c[section].cartes[+q[1]][q[2]] = el.value; }
+    else if (cle.indexOf('liste.') === 0) { var q2 = cle.split('.'); c[section].liste[+q2[1]][q2[2]] = el.value; }
     else if (cle === 'taille') c[section][cle] = parseInt(el.value, 10) || 0;
     else c[section][cle] = el.value;
   });
