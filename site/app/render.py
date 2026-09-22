@@ -26,7 +26,7 @@ CONTENU_DEFAUT = {
         "titre": "MasterMix",
         "accroche": "La station de travail audio professionnelle, *facile*, pour mixer et masteriser.",
         "bouton": "Télécharger pour Windows",
-        "meta": "Version 2.16 · Windows 10 / 11, 64 bits · Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite",
+        "meta": "Version 2.17 · Windows 10 / 11, 64 bits · Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite",
         "capture": "editeur.jpg",
         "capture_alt": "Fenêtre d'édition de MasterMix : pistes, inserts, départs et entrées-sorties",
         "legende": "Fenêtre d'édition : chaque piste affiche ses inserts, ses départs et ses entrées-sorties.",
@@ -37,7 +37,7 @@ CONTENU_DEFAUT = {
         "cartes": [
             {"titre": "Facile", "texte": "Une disposition inspirée des grandes consoles : inserts, départs et entrées-sorties directement dans l'en-tête de chaque piste. Modes SHUFFLE, SPOT, SLIP et GRID, horloges Début / Fin / Longueur. Interface entièrement en français."},
             {"titre": "Mixer", "texte": "Une tranche par piste, bus et retours, gel des pistes en un raccourci. Vos instruments et effets VST3, VST2 et CLAP, repérés automatiquement et hébergés dans un processus séparé. Pilotes ASIO pour une latence minimale."},
-            {"titre": "Masteriser", "texte": "Les sept plugins Mastersuite sont inclus : égaliseur MasterQ, compresseur MasterComp 76, limiteur true-peak MasterL, restauration MasterClean, assistant de mastering MasterFlem, réverbe MasteRev et délai MasterDelay."},
+            {"titre": "Masteriser", "texte": "Les huit plugins Mastersuite sont inclus : égaliseur MasterQ, compresseur MasterComp 76, limiteur true-peak MasterL, restauration MasterClean, assistant de mastering MasterFlem, réverbe MasteRev, délai MasterDelay et accordeur MasterTune."},
         ],
     },
     "console": {
@@ -49,15 +49,15 @@ CONTENU_DEFAUT = {
         "points": [
             "Bus, retours et départs auxiliaires",
             "Gel des pistes gourmandes, rendu audible immédiatement",
-            "Mastersuite : sept plugins de mixage et de mastering inclus",
+            "Mastersuite : huit plugins de mixage et de mastering inclus, accordeur compris",
         ],
     },
     "telechargement": {
-        "titre": "Télécharger MasterMix 2.16",
+        "titre": "Télécharger MasterMix 2.17",
         "texte": "Installeur pour Windows 10 et 11, 64 bits, avec les sept plugins VST3 Mastersuite. Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite. Sans compte ni abonnement ; MasterMix vous propose lui-même les mises à jour suivantes.",
-        "fichier": "MasterMix-2.16-Setup-x64.exe",
-        "taille": 13833430,
-        "sha256": "ffbd1f56ca51cb271ace9aa133caee2e83a276b3ac3d60391d18e433335e6db8",
+        "fichier": "MasterMix-2.17-Setup-x64.exe",
+        "taille": 13895249,
+        "sha256": "4ec0c0325b38fd78207612d0fe8f6aa099d0eade81c686b0a82c845a7c298818",
         "note": "Au premier lancement, Windows SmartScreen peut afficher un avertissement : l'installeur n'est pas signé par un certificat commercial. Vérifiez l'empreinte, puis choisissez « Informations complémentaires » › « Exécuter quand même ».",
     },
     "configuration": {
