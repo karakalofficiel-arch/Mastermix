@@ -213,7 +213,7 @@ class TestServeur(unittest.TestCase):
         r = c.req("POST", "/admin/api/fichiers/media/morceau?nom=a.svg&id=sv&indice=0&total=1", b"<svg onload='x'></svg>", {"Content-Type": "application/octet-stream"}, brut=True)
         self.assertEqual(r.status, 400)
         self.assertEqual(c.json("DELETE", "/admin/api/fichiers/telechargements/Test-Setup.exe")[0], 200)
-        self.assertEqual(c.json("DELETE", "/admin/api/fichiers/telechargements/MasterMix-2.18-Setup-x64.exe")[0], 409)
+        self.assertEqual(c.json("DELETE", "/admin/api/fichiers/telechargements/MasterMix-2.19-Setup-x64.exe")[0], 409)
 
     def test_reglages_et_mot_de_passe(self):
         c = self.admin()
