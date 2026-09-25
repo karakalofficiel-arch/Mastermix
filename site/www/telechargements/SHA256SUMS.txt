@@ -1,3 +1,5 @@
+4e329193b301894d60f1994dfa95fdbde184137402a07d3b06dee4d2af6d653e *MasterMix-2.19-Setup-x64.exe
+ef509efc33c2e09db89b64ad25e7d4054aacd37dc96f9c9fbdce462f2dafa8b4 *Mastersuite-1.4.0-Setup-x64.exe
 4c12a59a284188461a5af492da608c682a8c0e15e33c5a919901e5c1699af07c *MasterMix-2.18-Setup-x64.exe
 4ec0c0325b38fd78207612d0fe8f6aa099d0eade81c686b0a82c845a7c298818 *MasterMix-2.17-Setup-x64.exe
 ffbd1f56ca51cb271ace9aa133caee2e83a276b3ac3d60391d18e433335e6db8 *MasterMix-2.16-Setup-x64.exe
