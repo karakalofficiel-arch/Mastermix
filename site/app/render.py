@@ -26,7 +26,7 @@ CONTENU_DEFAUT = {
         "titre": "MasterMix",
         "accroche": "La station de travail audio professionnelle, *facile*, pour mixer et masteriser.",
         "bouton": "Télécharger pour Windows",
-        "meta": "Version 2.17 · Windows 10 / 11, 64 bits · Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite",
+        "meta": "Version 2.18 · Windows 10 / 11, 64 bits · Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite",
         "capture": "editeur.jpg",
         "capture_alt": "Fenêtre d'édition de MasterMix : pistes, inserts, départs et entrées-sorties",
         "legende": "Fenêtre d'édition : chaque piste affiche ses inserts, ses départs et ses entrées-sorties.",
@@ -37,7 +37,7 @@ CONTENU_DEFAUT = {
         "cartes": [
             {"titre": "Facile", "texte": "Une disposition inspirée des grandes consoles : inserts, départs et entrées-sorties directement dans l'en-tête de chaque piste. Modes SHUFFLE, SPOT, SLIP et GRID, horloges Début / Fin / Longueur. Interface entièrement en français."},
             {"titre": "Mixer", "texte": "Une tranche par piste, bus et retours, gel des pistes en un raccourci. Vos instruments et effets VST3, VST2 et CLAP, repérés automatiquement et hébergés dans un processus séparé. Pilotes ASIO pour une latence minimale."},
-            {"titre": "Masteriser", "texte": "Les huit plugins Mastersuite sont inclus : égaliseur MasterQ, compresseur MasterComp 76, limiteur true-peak MasterL, restauration MasterClean, assistant de mastering MasterFlem, réverbe MasteRev, délai MasterDelay et accordeur MasterTune."},
+            {"titre": "Masteriser", "texte": "Les treize plugins Mastersuite sont inclus : égaliseur MasterQ, compresseur MasterComp 76, limiteur true-peak MasterL, restauration MasterClean, assistant de mastering MasterFlem, réverbe MasteRev, délai MasterDelay, accordeur MasterTune, ampli MasterBend, et quatre instruments : batterie MasterDrum, piano MasterKeys, cordes MasterString et basse MasterBass."},
         ],
     },
     "console": {
@@ -49,12 +49,12 @@ CONTENU_DEFAUT = {
         "points": [
             "Bus, retours et départs auxiliaires",
             "Gel des pistes gourmandes, rendu audible immédiatement",
-            "Mastersuite : huit plugins de mixage et de mastering inclus, accordeur compris",
+            "Mastersuite : treize plugins inclus, effets, accordeur, ampli et instruments",
         ],
     },
     "plugins": {
         "surtitre": "Mastersuite",
-        "titre": "Huit plugins inclus, du premier accord au master.",
+        "titre": "Treize plugins inclus, du premier accord au master.",
         "texte": "Tous en VST3, habillage MasterMix, installés avec la station. Ils fonctionnent aussi dans tout autre hôte VST3 64 bits.",
         "liste": [
             {"nom": "MasterQ", "role": "Égaliseur", "capture": "plugins/masterq.jpg", "texte": "Égaliseur paramétrique 16 bandes : courbe interactive à la souris, analyseur de spectre en temps réel, cloches, plateaux, coupe-bas et coupe-haut. Pour sculpter une piste ou corriger un master."},
@@ -65,14 +65,19 @@ CONTENU_DEFAUT = {
             {"nom": "MasteRev", "role": "Réverbe", "capture": "plugins/masterev.jpg", "texte": "Réverbe algorithmique à réseau de huit lignes : taille, pré-délai, amortissement, largeur, mix. Douze préconfigurations voix et instruments qui sonnent juste dès le choix, en insert ou sur un bus."},
             {"nom": "MasterDelay", "role": "Délai", "capture": "plugins/masterdelay.jpg", "texte": "Délai stéréo synchronisé au tempo ou libre, ping-pong, retour filtré et saturé en douceur, modulation type bande. Douze préconfigurations : slapback, doublage, écho pointé, dub."},
             {"nom": "MasterTune", "role": "Accordeur", "capture": "plugins/mastertune.jpg", "texte": "Accordeur chromatique à poser sur la piste : note, écart en cents sur une aiguille, fréquence mesurée, La de référence réglable, notation C D E ou Do Ré Mi, sortie muette pendant l'accordage. Précis au cent."},
+            {"nom": "MasterBend", "role": "Ampli", "capture": "plugins/masterbend.jpg", "texte": "Simulation d'ampli guitare et basse à brancher sur une piste DI : cinq modèles (clean US, crunch UK, lead, boutique, basse), quatre baffles (ou aucun, pour une réponse impulsionnelle externe), égalisation basses / médiums / aigus / présence, porte de bruit. Dix préréglages."},
+            {"nom": "MasterDrum", "role": "Batterie", "capture": "plugins/masterdrum.jpg", "texte": "Batterie à échantillons : kit dessiné en 3D qui s'allume à chaque coup, patterns MIDI joués au tempo de la session, morceau enchaîné section par section, micros proche / overheads / room. Glissez le morceau vers une piste de MasterMix. Vos WAV ou SFZ, ou les sons internes."},
+            {"nom": "MasterKeys", "role": "Piano", "capture": "plugins/masterkeys.jpg", "texte": "Piano à échantillons : le Salamander Grand Piano (Yamaha C5, 16 couches de vélocité, Alexander Holm, CC-BY 3.0) proposé à l'installation. Grille d'accords : tonalité, « 4 accords » par style, suggestions, accompagnement calé sur la lecture et glissé en MIDI."},
+            {"nom": "MasterString", "role": "Violon et violoncelle", "capture": "plugins/masterstring.jpg", "texte": "Violon et violoncelle : six articulations par keyswitches (arco, pizzicato, staccato, trémolo, sourdine, col legno), legato et portamento en mode MONO, manches affichés. Grille d'accords partagée avec MasterKeys et MasterBass. Vos WAV ou SFZ, ou les sons internes."},
+            {"nom": "MasterBass", "role": "Basse", "capture": "plugins/masterbass.jpg", "texte": "Basse à échantillons : huit articulations par keyswitches (doigt, médiator, étouffé, slap, pop, harmonique, ghost, glissé), manche à quatre cordes, legato et portamento, accompagnement qui suit la grille d'accords. Vos WAV ou SFZ, ou les sons internes."},
         ],
     },
     "telechargement": {
-        "titre": "Télécharger MasterMix 2.17",
-        "texte": "Installeur pour Windows 10 et 11, 64 bits, avec les sept plugins VST3 Mastersuite. Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite. Sans compte ni abonnement ; MasterMix vous propose lui-même les mises à jour suivantes.",
-        "fichier": "MasterMix-2.17-Setup-x64.exe",
-        "taille": 13895249,
-        "sha256": "4ec0c0325b38fd78207612d0fe8f6aa099d0eade81c686b0a82c845a7c298818",
+        "titre": "Télécharger MasterMix 2.18",
+        "texte": "Installeur pour Windows 10 et 11, 64 bits, avec les treize plugins VST3 Mastersuite et, au choix, le piano Salamander (téléchargé pendant l'installation). Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite. Sans compte ni abonnement ; MasterMix vous propose lui-même les mises à jour suivantes.",
+        "fichier": "MasterMix-2.18-Setup-x64.exe",
+        "taille": 14560637,
+        "sha256": "4c12a59a284188461a5af492da608c682a8c0e15e33c5a919901e5c1699af07c",
         "note": "Au premier lancement, Windows SmartScreen peut afficher un avertissement : l'installeur n'est pas signé par un certificat commercial. Vérifiez l'empreinte, puis choisissez « Informations complémentaires » › « Exécuter quand même ».",
     },
     "configuration": {
