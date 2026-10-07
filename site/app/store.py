@@ -42,6 +42,24 @@ def _ecrire_atomique(chemin, texte, mode=None):
     os.replace(tmp, chemin)
 
 
+def _completer(contenu, defaut):
+    """Ajoute au contenu en ligne les sections et champs apparus depuis dans CONTENU_DEFAUT
+    (nouveau champ du gabarit) sans toucher à ce qui est déjà renseigné."""
+    if not isinstance(contenu, dict):
+        return json.loads(json.dumps(defaut))
+    for section, champs in defaut.items():
+        if not isinstance(champs, dict):
+            contenu.setdefault(section, json.loads(json.dumps(champs)))
+            continue
+        cible = contenu.get(section)
+        if not isinstance(cible, dict):
+            contenu[section] = json.loads(json.dumps(champs))
+            continue
+        for champ, valeur in champs.items():
+            cible.setdefault(champ, json.loads(json.dumps(valeur)))
+    return contenu
+
+
 def _lire_json(chemin, defaut):
     try:
         with open(chemin, encoding="utf-8") as f:
@@ -74,7 +92,8 @@ class Store:
             chemin = self.data / "content.json"
             if not chemin.exists():
                 _ecrire_atomique(chemin, json.dumps(self.contenu_defaut, ensure_ascii=False, indent=2))
-            return _lire_json(chemin, json.loads(json.dumps(self.contenu_defaut)))
+            contenu = _lire_json(chemin, json.loads(json.dumps(self.contenu_defaut)))
+            return _completer(contenu, self.contenu_defaut)
 
     def ecrire_contenu(self, contenu):
         with self._verrou:

@@ -51,9 +51,12 @@ if [ "$WHAT" = all ] || [ "$WHAT" = 117 ]; then
   $SSH117 'mkdir -p /root/mastermix/nginx /root/mastermix/certs /var/www/acme'
   scp -q -i "$KEY117" "$HERE/nas117/mastermix.fr.conf" root@192.168.1.117:/root/mastermix/nginx/mastermix.fr.conf
   scp -q -i "$KEY117" "$HERE/nas117/issue-letsencrypt.sh" root@192.168.1.117:/root/mastermix/certs/issue-letsencrypt.sh
+  # Garde-fou nginx (voir nas117/start.sh). Son enregistrement Post-Init + cron TrueNAS
+  # a été fait à la main le 2026-10-06 (midclt, ids 3) : ici on ne fait que synchroniser le fichier.
+  scp -q -i "$KEY117" "$HERE/nas117/start.sh" root@192.168.1.117:/root/mastermix/start.sh
   $SSH117 '
 set -e
-chmod +x /root/mastermix/certs/issue-letsencrypt.sh
+chmod +x /root/mastermix/certs/issue-letsencrypt.sh /root/mastermix/start.sh
 C=/root/mastermix/certs
 # Certificat de substitution (auto-signé) pour que nginx accepte le vhost avant Let'"'"'s Encrypt.
 if [ ! -s $C/mastermix.fr.fullchain.pem ]; then

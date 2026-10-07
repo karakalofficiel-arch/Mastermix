@@ -40,7 +40,9 @@ MAX_CORPS = 512 * 1024
 MAX_MORCEAU = 1024 * 1024 + 1024
 MAX_ENVOI = 30 * 1024 * 1024        # JSON avec pièces jointes en base64 (20 Mo bruts)
 LIMITES = {"media": 8 * 1024 * 1024, "telechargements": 200 * 1024 * 1024}
-EXTENSIONS = {"media": {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"}, "telechargements": {".exe", ".zip", ".msi"}}
+VIDEOS = {".webm", ".mp4"}             # vidéo d'accueil (muette, en boucle) : plafond propre
+LIMITE_VIDEO = 80 * 1024 * 1024
+EXTENSIONS = {"media": {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"} | VIDEOS, "telechargements": {".exe", ".zip", ".msi"}}
 _SVG_DANGER = re.compile(rb"<script|on[a-z]+\s*=|javascript:|<foreignObject|<iframe", re.I)
 
 FABRIQUES = {"imap": courrier.fabrique_imap, "smtp": courrier.fabrique_smtp, "adresse_mailu": None}
@@ -386,7 +388,7 @@ class Handler(BaseHTTPRequestHandler):
         if methode == "DELETE" and len(parties) == 2:
             nom = parties[1]
             contenu = APP.store.lire_contenu()
-            utilises = {contenu.get("accueil", {}).get("capture"), contenu.get("console", {}).get("capture"), contenu.get("telechargement", {}).get("fichier")}
+            utilises = {contenu.get("accueil", {}).get("capture"), contenu.get("accueil", {}).get("video"), contenu.get("console", {}).get("capture"), contenu.get("telechargement", {}).get("fichier")}
             if nom in utilises:
                 return self.json_({"erreur": "fichier utilisé par la page d'accueil : changez d'abord le contenu"}, 409)
             ok = APP.store.supprimer_fichier(cat, nom)
@@ -407,15 +409,16 @@ class Handler(BaseHTTPRequestHandler):
         if Path(nom).suffix.lower() not in EXTENSIONS[cat]:
             raise ValueError("extension refusée pour %s : %s" % (cat, ", ".join(sorted(EXTENSIONS[cat]))))
         donnees = self.lire_corps(MAX_MORCEAU)
+        limite = LIMITE_VIDEO if Path(nom).suffix.lower() in VIDEOS else LIMITES[cat]
         temporaire = APP.www / cat / (".%s.part" % ident)
         with APP._verrou:
             etat = APP.televersements.setdefault(ident, {"recu": 0, "taille": 0, "nom": nom, "debut": time.time()})
             if etat["recu"] != indice or etat["nom"] != nom:
                 raise ValueError("morceau hors séquence")
-            if etat["taille"] + len(donnees) > LIMITES[cat]:
+            if etat["taille"] + len(donnees) > limite:
                 temporaire.unlink(missing_ok=True)
                 APP.televersements.pop(ident, None)
-                raise ValueError("fichier trop volumineux (%s max)" % render.format_taille(LIMITES[cat]))
+                raise ValueError("fichier trop volumineux (%s max)" % render.format_taille(limite))
             temporaire.parent.mkdir(parents=True, exist_ok=True)
             with open(temporaire, "ab" if indice else "wb") as f:
                 f.write(donnees)

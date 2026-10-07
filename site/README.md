@@ -21,7 +21,15 @@ Internet ── Freebox (80/443 → 192.168.1.117) ── nginx .117 (TLS, vhost
 | Conteneur .166 | `/mnt/karakalia/mastermix-site/` : `app/` (lecture seule), `data/` (contenu, pages, réglages, journal, sauvegardes, clé), `www/` (logo, captures, `media/`, `telechargements/`) — port `192.168.1.166:8095` |
 | Vhost .117 | `/root/mastermix/nginx/mastermix.fr.conf`, inclus par une ligne dans `/etc/nginx/nginx.conf` |
 | Certificat .117 | `/root/mastermix/certs/` (Let's Encrypt via acme.sh, renouvellement cron 10h35) |
+| Garde-fou .117 | `/root/mastermix/start.sh` (source `site/nas117/start.sh`) : réinjecte l'`include` du vhost dans `nginx.conf` s'il a disparu, `nginx -t`, reload, rollback. Enregistré dans TrueNAS en Post-Init (id 3) et en cron `*/2` min (id 3), journal `/root/mastermix/start.log`. Incident du 2026-09-30 : le reboot avait régénéré `nginx.conf`, le site renvoyait l'UI TrueNAS jusqu'au 2026-10-06. |
 | Rollback statique | `docker-compose.nginx.yml` dans le dossier du conteneur |
+
+## Accueil animé (2026-10-07)
+
+- Gabarit : titre révélé lettre par lettre, capture d'accueil qui bascule en 3D au chargement puis suit le pointeur (souris seulement, avec reflet), fond du hero en **WebGL** (shader maison, formes d'onde vert pomme, rendu seulement quand le hero est visible et l'onglet actif, résolution à 60 %), trois chiffres qui comptent (section `chiffres`, « valeur | unité | libellé »), **anneau 3D** des captures de plugins (CSS 3D, rotation pilotée par le défilement + dérive lente, cartes de dos assombries, rendu `_anneau` avec `--i`/`--n`), révélations au défilement une seule fois, en-tête compact. Tout le calcul est côté navigateur : CSS + ~200 lignes de JS inline, aucune bibliothèque ; le serveur ne fait que remplir le gabarit. Sans JS : page statique, anneau en rangée défilante. `prefers-reduced-motion` : tout désactivé.
+- Vidéo d'accueil : champ `accueil.video` (nom d'un fichier `.webm` ou `.mp4` déposé dans `media/`, 80 Mo max) remplace la capture par une vidéo muette en boucle, poster = la capture. Vide par défaut.
+- `store.lire_contenu` complète le `content.json` en ligne avec les champs apparus depuis dans `CONTENU_DEFAUT` (sans écraser l'existant).
+- Passage à dix plugins (sans MasterBend, MasterDrum, MasterString) : `CONTENU_DEFAUT` à jour ; pour le contenu en ligne, lancer une fois `nas166/contenu-dix-plugins.py` sur .166 (le backoffice ne sait pas supprimer une ligne de la liste).
 
 ## Backoffice
 

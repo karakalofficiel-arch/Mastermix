@@ -254,7 +254,7 @@ function onglet(nom){
 $('onglets').addEventListener('click', function(ev){ var b = ev.target.closest('button'); if (b) onglet(b.dataset.t); });
 
 /* --- contenu --------------------------------------------------------- */
-var LIBELLES = {site: 'Site', accueil: 'Accueil', promesses: 'Trois promesses', console: 'Section console', telechargement: 'Téléchargement', configuration: 'Configuration requise', pied: 'Pied de page'};
+var LIBELLES = {site: 'Site', accueil: 'Accueil', chiffres: 'Trois chiffres (valeur | unité | libellé)', promesses: 'Trois promesses', console: 'Section console', telechargement: 'Téléchargement', configuration: 'Configuration requise', pied: 'Pied de page'};
 function champ(section, cle, valeur){
   var id = 'f-' + section + '-' + cle, long = typeof valeur === 'string' && valeur.length > 90;
   return '<label>' + esc(cle) + '</label>' + (long ? '<textarea id="' + id + '">' + esc(valeur) + '</textarea>' : '<input id="' + id + '" value="' + esc(valeur) + '">');
@@ -265,9 +265,11 @@ function chargerContenu(){
     d.champs && Object.keys(d.champs).forEach(function(section){
       h += '<div class="card"><h3>' + esc(LIBELLES[section] || section) + '</h3>';
       d.champs[section].forEach(function(cle){
-        var v = contenu[section][cle];
+        var v = (contenu[section] || {})[cle];
         if (cle === 'cartes') { v.forEach(function(c, i){ h += '<div class="row"><div>' + champ(section, 'cartes.' + i + '.titre', c.titre) + '</div><div style="flex:3 1 300px">' + champ(section, 'cartes.' + i + '.texte', c.texte) + '</div></div>'; }); }
-        else if (cle === 'liste') { v.forEach(function(c, i){ h += '<div class="row"><div>' + champ(section, 'liste.' + i + '.nom', c.nom) + champ(section, 'liste.' + i + '.role', c.role) + champ(section, 'liste.' + i + '.capture', c.capture) + '</div><div style="flex:3 1 300px">' + champ(section, 'liste.' + i + '.texte', c.texte) + '</div></div>'; }); }
+        else if (cle === 'liste' && section === 'chiffres') { h += '<label>liste (valeur | unité | libellé, une par ligne)</label><textarea id="f-chiffres-liste">' + esc((v || []).map(function(l){ return l.join(' | '); }).join('
+')) + '</textarea>'; }
+        else if (cle === 'liste') { (v || []).forEach(function(c, i){ h += '<div class="row"><div>' + champ(section, 'liste.' + i + '.nom', c.nom) + champ(section, 'liste.' + i + '.role', c.role) + champ(section, 'liste.' + i + '.capture', c.capture) + '</div><div style="flex:3 1 300px">' + champ(section, 'liste.' + i + '.texte', c.texte) + '</div></div>'; }); }
         else if (cle === 'points') { h += '<label>points (une ligne par point)</label><textarea id="f-console-points">' + esc(v.join('\n')) + '</textarea>'; }
         else if (cle === 'lignes') { h += '<label>lignes (libellé | valeur, une par ligne)</label><textarea id="f-configuration-lignes">' + esc(v.map(function(l){ return l[0] + ' | ' + l[1]; }).join('\n')) + '</textarea>'; }
         else h += champ(section, cle, v);
@@ -282,6 +284,8 @@ function lireContenu(){
   document.querySelectorAll('#contenu-form [id^="f-"]').forEach(function(el){
     var p = el.id.slice(2).split('-'), section = p[0], cle = p.slice(1).join('-');
     if (cle === 'points') c.console.points = el.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+    else if (section === 'chiffres' && cle === 'liste') c.chiffres = {liste: el.value.split('
+').map(function(s){ var t = s.split('|').map(function(x){ return x.trim(); }); return t.length === 3 ? t : null; }).filter(Boolean)};
     else if (cle === 'lignes') c.configuration.lignes = el.value.split('\n').map(function(s){ var i = s.indexOf('|'); return i < 0 ? null : [s.slice(0, i).trim(), s.slice(i + 1).trim()]; }).filter(Boolean);
     else if (cle.indexOf('cartes.') === 0) { var q = cle.split('.'); c[section].cartes[+q[1]][q[2]] = el.value; }
     else if (cle.indexOf('liste.') === 0) { var q2 = cle.split('.'); c[section].liste[+q2[1]][q2[2]] = el.value; }

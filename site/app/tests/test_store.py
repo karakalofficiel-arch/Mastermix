@@ -21,6 +21,16 @@ class TestStore(unittest.TestCase):
         self.assertEqual(self.store.lire_contenu()["site"]["titre"], "MasterMix")
         self.assertTrue((self.data / "content.json").exists())
 
+    def test_lire_contenu_complete_les_champs_manquants(self):
+        defaut = {"site": {"titre": "MasterMix"}, "accueil": {"titre": "T", "video": ""}, "chiffres": {"liste": [["1", "a", "b"]]}}
+        store = Store(self.data, self.www, contenu_defaut=defaut)
+        store.ecrire_contenu({"site": {"titre": "En ligne"}, "accueil": {"titre": "Garde"}})
+        relu = store.lire_contenu()
+        self.assertEqual(relu["site"]["titre"], "En ligne")
+        self.assertEqual(relu["accueil"]["titre"], "Garde")
+        self.assertEqual(relu["accueil"]["video"], "")
+        self.assertEqual(relu["chiffres"], defaut["chiffres"])
+
     def test_ecriture_atomique_et_sauvegarde(self):
         nom = self.store.ecrire_contenu({"site": {"titre": "Nouveau"}})
         self.assertEqual(self.store.lire_contenu()["site"]["titre"], "Nouveau")

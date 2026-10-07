@@ -42,6 +42,51 @@ class TestRender(unittest.TestCase):
         self.assertEqual(render.format_taille(2048), "2 Ko")
         self.assertEqual(render.format_taille("x"), "")
 
+    def test_dix_plugins_par_defaut(self):
+        noms = [p["nom"] for p in render.CONTENU_DEFAUT["plugins"]["liste"]]
+        self.assertEqual(len(noms), 10)
+        for absent in ("MasterBend", "MasterDrum", "MasterString"):
+            self.assertNotIn(absent, noms)
+        h = render.page_accueil(render.CONTENU_DEFAUT)
+        self.assertNotIn("treize", h.lower())
+        self.assertNotIn("Treize", h)
+
+    def test_anneau_3d_des_plugins(self):
+        h = render.page_accueil(render.CONTENU_DEFAUT)
+        self.assertEqual(h.count('class="carte3d"'), 10)
+        self.assertIn('style="--n:10"', h)
+        self.assertEqual(h.count('plugins/masterq.jpg'), 2)   # anneau + grille
+        self.assertIn('<figcaption>MasterQ</figcaption>', h)
+        self.assertIn('<canvas class="onde"', h)
+
+    def test_accueil_image_par_defaut(self):
+        h = render.page_accueil(render.CONTENU_DEFAUT)
+        self.assertNotIn("<video", h)
+        self.assertIn('<img src="editeur.jpg"', h)
+
+    def test_accueil_video_si_renseignee(self):
+        c = copy.deepcopy(render.CONTENU_DEFAUT)
+        c["accueil"]["video"] = "demo.webm"
+        h = render.page_accueil(c)
+        self.assertIn('<video', h)
+        self.assertIn('src="media/demo.webm"', h)
+        self.assertIn('poster="editeur.jpg"', h)
+        self.assertIn("autoplay", h)
+        self.assertIn("muted", h)
+        self.assertIn("loop", h)
+        self.assertIn("playsinline", h)
+        self.assertNotIn('<img src="editeur.jpg"', h)
+
+    def test_chiffres(self):
+        h = render.page_accueil(render.CONTENU_DEFAUT)
+        self.assertEqual(h.count('class="chiffre"'), 3)
+        self.assertIn('data-valeur="8,3"', h)
+        c = copy.deepcopy(render.CONTENU_DEFAUT)
+        c["chiffres"]["liste"] = [["42", "x", "<b>"]]
+        h = render.page_accueil(c)
+        self.assertIn("&lt;b&gt;", h)
+        self.assertEqual(h.count('class="chiffre"'), 1)
+
     def test_page_libre(self):
         page = {"slug": "actus", "titre": "Actualités", "contenu_md": "# Bonjour\n\nTexte **gras**.", "visible": True}
         h = render.page_libre(render.CONTENU_DEFAUT, page, [page])

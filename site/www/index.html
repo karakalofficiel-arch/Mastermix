@@ -4,19 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MasterMix — la station de travail audio professionnelle, facile, pour mixer et masteriser</title>
-<meta name="description" content="MasterMix 2 est une station de travail audio professionnelle et facile pour Windows : enregistrez, mixez et masterisez dans une seule fenêtre, en français, avec les sept plugins Mastersuite inclus. Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite.">
+<meta name="description" content="MasterMix 2 est une station de travail audio professionnelle et facile pour Windows : enregistrez, mixez et masterisez dans une seule fenêtre, en français, avec les dix plugins Mastersuite inclus. Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite.">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Manrope:wght@400;500;600;700&display=swap">
 <style>
-:root{--apple:#a4de02;--apple-light:#c6f04a;--bg:#0a0a0a;--panel:#121212;--line:#222;--line-soft:#1c1c1c;--text:#ecece6;--title:#f4f4ee;--muted:#a8a8a0;--dim:#8f8f88;--faint:#6f6f68;--soft:#d6d6cf;--glow:#2a3a08}
+:root{--apple:#a4de02;--apple-light:#c6f04a;--bg:#0a0a0a;--panel:#121212;--line:#222;--line-soft:#1c1c1c;--text:#ecece6;--title:#f4f4ee;--muted:#a8a8a0;--dim:#8f8f88;--faint:#6f6f68;--soft:#d6d6cf;--glow:#2a3a08;--ease:cubic-bezier(.2,.7,.2,1)}
 *{box-sizing:border-box}
-img,svg{max-width:100%}
+img,svg,video{max-width:100%}
 html{scroll-behavior:smooth}
 body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--text);font-family:Manrope,"Segoe UI",system-ui,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:var(--apple-light);text-decoration:none}
 a:hover{color:#e3ff8a}
+a:focus-visible,.btn:focus-visible{outline:2px solid var(--apple-light);outline-offset:3px}
 h1,h2,h3,.syne{font-family:Syne,"Segoe UI",system-ui,sans-serif}
 .wrap{max-width:1248px;margin:0 auto;padding:0 20px}
 @media(min-width:1100px){.wrap{padding:0 96px;max-width:1440px}}
@@ -26,31 +27,64 @@ h1,h2,h3,.syne{font-family:Syne,"Segoe UI",system-ui,sans-serif}
 .btn svg{flex:none}
 /* nav */
 header{position:sticky;top:0;z-index:5;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-soft)}
-header .wrap{display:flex;align-items:center;justify-content:space-between;height:76px}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:76px;transition:height .35s var(--ease)}
+.js header.compact .wrap{height:60px}
 .brand{display:flex;align-items:center;gap:14px;color:var(--title);font-weight:800;font-size:20px;letter-spacing:.02em}
 .brand:hover{color:var(--title)}
-.brand img{width:38px;height:38px;border-radius:9px}
+.brand img{width:38px;height:38px;border-radius:9px;transition:width .35s var(--ease),height .35s var(--ease)}
+.js header.compact .brand img{width:30px;height:30px}
 nav{display:flex;align-items:center;gap:36px;font-size:15px;font-weight:500}
 nav a{color:var(--muted)}
 nav a:hover{color:var(--apple-light)}
 nav .btn{color:var(--bg)}
 @media(max-width:820px){header .wrap{height:64px}nav a:not(.btn){display:none}.brand{font-size:18px}.brand img{width:32px;height:32px}}
-/* hero */
-.hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:104px 0 0;gap:22px}
+/* hero : la seule séquence orchestrée de la page (chargement) */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:104px 0 0;gap:22px;position:relative}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--apple)}
 .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--apple)}
-.hero h1{margin:0;font-weight:800;font-size:clamp(40px,13vw,132px);line-height:.95;letter-spacing:-.03em;color:var(--title)}
+/* taille bornée par la largeur disponible : « MasterMix » en Syne 800 fait 8,4 fois le corps */
+.hero h1{margin:0;font-weight:800;font-size:clamp(34px,calc((100vw - 48px) / 8.6),132px);line-height:.95;letter-spacing:-.03em;color:var(--title);overflow:hidden;padding:0 .04em .06em}
+@media(min-width:1100px){.hero h1{font-size:clamp(34px,calc((100vw - 200px) / 8.6),132px)}}
+.hero h1 .mot{display:inline-block;white-space:nowrap}
+.hero h1 .l{display:inline-block;opacity:0;transform:translateY(105%);animation:lettre .9s var(--ease) forwards;animation-delay:calc(var(--i) * 48ms + 120ms)}
+@keyframes lettre{to{opacity:1;transform:none}}
+.js .monte{opacity:0;transform:translateY(14px);animation:monte .8s var(--ease) forwards}
+.js .hero .eyebrow.monte{animation-delay:.05s}
+.js .hero .lead.monte{animation-delay:.7s}
+.js .hero .cta.monte{animation-delay:.85s}
+@keyframes monte{to{opacity:1;transform:none}}
 .hero .lead{margin:6px 0 0;max-width:820px;font-family:Syne,"Segoe UI",system-ui,sans-serif;font-weight:500;font-size:clamp(22px,2.1vw,30px);line-height:1.3;color:var(--soft);text-wrap:pretty}
 .hero .lead em{font-style:normal;color:var(--apple)}
 .hero .cta{display:flex;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap;justify-content:center}
 .hero .meta{font-size:14px;color:var(--dim)}
 @media(max-width:820px){.hero{align-items:stretch;text-align:left;padding-top:48px;gap:16px}.hero .cta{flex-direction:column;align-items:stretch}.hero .btn{width:100%}.hero .meta{text-align:center}}
-/* screenshots */
-.shot{border-radius:14px;overflow:hidden;border:1px solid var(--glow);box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 0 6px rgba(164,222,2,.06)}
-.shot img{display:block;width:100%;height:auto}
-.hero-shot{padding-top:64px}
+/* fond WebGL du hero : formes d'onde calculées par le GPU du visiteur, derrière le texte */
+main{position:relative}
+.onde{position:absolute;left:0;right:0;top:0;width:100%;height:min(88vh,760px);z-index:0;pointer-events:none;opacity:0;transition:opacity 1.6s ease .3s}
+@media(max-width:820px){.onde{height:420px}}
+.onde.pret{opacity:1}
+.hero,.hero-shot,.chiffres{position:relative;z-index:1}
+/* captures */
+.shot{border-radius:14px;overflow:hidden;border:1px solid var(--glow);box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 0 6px rgba(164,222,2,.06);background:#000;position:relative}
+.shot img,.shot video{display:block;width:100%;height:auto}
+.hero-shot{padding-top:64px;position:relative;perspective:1600px}
+.hero-shot .shot.suit{animation:none;opacity:1;transform:rotateX(calc(var(--rx,0) * 1deg)) rotateY(calc(var(--ry,0) * 1deg));transition:transform .18s ease-out;will-change:transform}
+.hero-shot .shot.suit::after{content:"";position:absolute;inset:0;background:linear-gradient(calc(105deg + var(--ry,0) * 2deg),transparent 35%,rgba(255,255,255,calc(.035 + var(--lum,0) * .06)) 50%,transparent 65%);background-position:calc(50% + var(--ry,0) * 6%) 0;pointer-events:none}
+.hero-shot::before{content:"";position:absolute;left:50%;top:40%;width:70%;height:60%;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(164,222,2,.22),rgba(164,222,2,0));filter:blur(40px);pointer-events:none;z-index:-1}
+.js .hero-shot .shot{opacity:0;transform:rotateX(11deg) translateY(72px);animation:entree 1.3s var(--ease) .6s forwards;transform-origin:50% 0}
+@keyframes entree{to{opacity:1;transform:none}}
+.js .hero-shot::before{opacity:0;animation:halo 1.6s ease-out 1s forwards}
+@keyframes halo{to{opacity:1}}
 .hero-shot p{margin:16px 0 0;text-align:center;font-size:13px;color:var(--faint)}
-@media(max-width:820px){.hero-shot{padding-top:32px}.shot{border-radius:10px}}
+@media(max-width:820px){.hero-shot{padding-top:32px}.shot{border-radius:10px}.js .hero-shot .shot{transform:translateY(32px)}}
+/* chiffres */
+.chiffres{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:104px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.chiffre{padding:36px 32px 36px 0;display:flex;flex-direction:column;gap:4px}
+.chiffre + .chiffre{padding-left:32px;border-left:1px solid var(--line)}
+.chiffre b{font-family:Syne,"Segoe UI",system-ui,sans-serif;font-weight:800;font-size:clamp(40px,4.6vw,68px);line-height:1;letter-spacing:-.035em;color:var(--title);font-variant-numeric:tabular-nums}
+.chiffre span{font-family:Syne,"Segoe UI",system-ui,sans-serif;font-weight:700;font-size:18px;color:var(--apple)}
+.chiffre p{margin:6px 0 0;font-size:15px;line-height:1.5;color:var(--muted);text-wrap:pretty}
+@media(max-width:820px){.chiffres{grid-template-columns:1fr;margin-top:56px}.chiffre{padding:22px 0}.chiffre + .chiffre{padding-left:0;border-left:0;border-top:1px solid var(--line)}.chiffre b{font-size:40px}}
 /* sections */
 section{padding-top:120px}
 @media(max-width:820px){section{padding-top:64px}}
@@ -58,17 +92,32 @@ section{padding-top:120px}
 h2{margin:0;font-weight:700;font-size:clamp(28px,3vw,44px);line-height:1.1;letter-spacing:-.02em;color:var(--title);text-wrap:pretty}
 .sub{margin:0;font-size:18px;line-height:1.55;color:var(--muted);text-wrap:pretty}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
-.card{display:flex;flex-direction:column;gap:16px;padding:32px;background:var(--panel);border:1px solid var(--line);border-radius:14px;transition:border-color .15s}
-.card:hover{border-color:#3a4a12}
+.card{display:flex;flex-direction:column;gap:16px;padding:32px;background:var(--panel);border:1px solid var(--line);border-radius:14px}
 .card h3{margin:0;font-weight:700;font-size:22px;color:var(--title)}
 .card p{margin:0;font-size:16px;color:var(--muted)}
 @media(max-width:820px){.grid3{grid-template-columns:1fr;gap:14px}.card{padding:24px}.card h3{color:var(--apple);font-size:20px}.card p{font-size:15px}.card svg{display:none}}
 .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:56px;align-items:center}
+.two .shot{transform:translateY(calc(var(--py,0) * 1px));will-change:transform}
 .two .copy{display:flex;flex-direction:column;gap:18px}
 .two .copy p{margin:0;font-size:17px;color:var(--muted);text-wrap:pretty}
 .kicker{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--apple)}
 .list{display:flex;flex-direction:column;gap:10px;margin-top:6px;font-size:15px;color:var(--soft)}
-/* plugins */
+.list div{display:flex;align-items:center;gap:12px}
+.list div::before{content:"";width:6px;height:6px;background:var(--apple);border-radius:50%;flex:none}
+@media(max-width:820px){.two{grid-template-columns:1fr;gap:16px}.two .shot{order:2}.two .copy{order:1}.two .copy h2{font-size:28px}.list{display:none}}
+/* plugins : anneau 3D piloté par le défilement, puis grille. Sans JS : simple rangée défilante. */
+.scene{margin:0 -20px 48px;padding:12px 0;overflow-x:auto;overflow-y:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+@media(min-width:1100px){.scene{margin-left:-96px;margin-right:-96px}}
+.anneau{display:flex;gap:20px;padding:0 20px;width:max-content}
+.carte3d{margin:0;flex:none;width:300px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#000;position:relative}
+.carte3d img{display:block;width:100%;height:auto}
+.carte3d figcaption{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;font-family:Syne,"Segoe UI",system-ui,sans-serif;font-weight:700;font-size:15px;color:var(--title);background:linear-gradient(transparent,rgba(0,0,0,.85))}
+.js .scene{overflow:hidden;height:380px;perspective:1700px;perspective-origin:50% 40%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+.js .anneau{position:relative;display:block;width:auto;height:100%;padding:0;transform-style:preserve-3d;transform:rotateX(-7deg) rotateY(calc(var(--rot,0) * 1deg));will-change:transform}
+/* rayon 600 px pour dix cartes de 250 px : devant, la perspective les grossit d'environ 1,5 (≈ 380 px) */
+.js .carte3d{position:absolute;left:50%;top:35%;width:250px;margin:-74px 0 0 -125px;transform:rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(var(--r,600px));backface-visibility:hidden;opacity:calc(.2 + .8 * var(--face,1));filter:brightness(calc(.4 + .6 * var(--face,1)));transition:opacity .2s linear,filter .2s linear}
+.js .carte3d figcaption{font-size:13px;padding:8px 12px}
+@media(max-width:820px){.scene{margin-bottom:28px}.carte3d{width:220px}.js .scene{height:240px;perspective:900px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}.js .carte3d{width:150px;margin:-44px 0 0 -75px;--r:300px}.js .carte3d figcaption{font-size:11px;padding:6px 8px}}
 .plugs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 .plug{display:flex;flex-direction:column;gap:14px;padding:20px;background:var(--panel);border:1px solid var(--line);border-radius:14px}
 .plug .shot{box-shadow:none;border-radius:10px}
@@ -76,9 +125,6 @@ h2{margin:0;font-weight:700;font-size:clamp(28px,3vw,44px);line-height:1.1;lette
 .plug h3 span{margin-left:10px;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--apple)}
 .plug p{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
 @media(max-width:820px){.plugs{grid-template-columns:1fr;gap:14px}.plug{padding:14px}}
-.list div{display:flex;align-items:center;gap:12px}
-.list div::before{content:"";width:6px;height:6px;background:var(--apple);border-radius:50%;flex:none}
-@media(max-width:820px){.two{grid-template-columns:1fr;gap:16px}.two .shot{order:2}.two .copy{order:1}.two .copy h2{font-size:28px}.list{display:none}}
 /* download */
 .download{margin-top:120px;padding:56px;background:var(--panel);border:1px solid var(--line);border-radius:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px;align-items:center}
 .download .copy{display:flex;flex-direction:column;gap:16px}
@@ -108,6 +154,21 @@ footer .id b{font-family:Syne,"Segoe UI",system-ui,sans-serif;font-weight:700;fo
 footer a{color:var(--muted)}
 footer p{margin:0;max-width:980px;text-wrap:pretty}
 @media(max-width:820px){footer{margin-top:64px;padding:28px 0 36px;font-size:12px}}
+/* révélations au défilement : une fois, discrètes ; sans JS tout est visible */
+.js .rv{opacity:0;transform:translateY(20px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+.js .rv.in{opacity:1;transform:none}
+.js .grid3 .rv:nth-child(2),.js .plugs .rv:nth-child(even),.js .chiffres .rv:nth-child(2){transition-delay:.1s}
+.js .grid3 .rv:nth-child(3),.js .chiffres .rv:nth-child(3){transition-delay:.2s}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js .rv,.js .monte,.hero h1 .l,.js .hero-shot .shot,.js .hero-shot::before{opacity:1;transform:none}
+  .two .shot{transform:none}
+  .onde{display:none}
+  .js .scene{height:auto;perspective:none;overflow-x:auto}
+  .js .anneau{display:flex;gap:20px;padding:0 20px;width:max-content;height:auto;transform:none}
+  .js .carte3d{position:static;margin:0;transform:none;opacity:1;filter:none}
+  html{scroll-behavior:auto}
+}
 </style>
 </head>
 <body>
@@ -123,11 +184,12 @@ footer p{margin:0;max-width:980px;text-wrap:pretty}
 </div></header>
 
 <main class="wrap">
+  <canvas class="onde" aria-hidden="true"></canvas>
   <div class="hero">
-    <div class="eyebrow">Station de travail audio pour Windows</div>
+    <div class="eyebrow monte">Station de travail audio pour Windows</div>
     <h1>MasterMix</h1>
-    <p class="lead">La station de travail audio professionnelle, <em>facile</em>, pour mixer et masteriser.</p>
-    <div class="cta">
+    <p class="lead monte">La station de travail audio professionnelle, <em>facile</em>, pour mixer et masteriser.</p>
+    <div class="cta monte">
       <a class="btn" href="telechargements/MasterMix-2.19-Setup-x64.exe">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="M6 11l6 6 6-6"/><path d="M4 21h16"/></svg>
         Télécharger pour Windows
@@ -141,49 +203,69 @@ footer p{margin:0;max-width:980px;text-wrap:pretty}
     <p>Fenêtre d'édition : chaque piste affiche ses inserts, ses départs et ses entrées-sorties.</p>
   </div>
 
+  <div class="chiffres">
+    <div class="chiffre"><b data-valeur="8,3">8,3</b><span>ms</span><p>de latence aller-retour mesurée en ASIO, buffer de 128 échantillons</p></div>
+    <div class="chiffre"><b data-valeur="10">10</b><span>plugins</span><p>Mastersuite inclus : effets de mixage et de mastering, accordeur, piano et basse</p></div>
+    <div class="chiffre"><b data-valeur="100">100</b><span>licences</span><p>à vie offertes aux premiers utilisateurs, 10 € ensuite</p></div>
+  </div>
+
   <section id="fonctions">
-    <div class="section-head">
+    <div class="section-head rv">
       <h2>Facile à prendre en main, sérieuse jusqu'au master.</h2>
       <p class="sub">Tout ce qu'il faut pour enregistrer, mixer et masteriser, dans une seule fenêtre lisible, en français.</p>
     </div>
     <div class="grid3">
-      <div class="card">
+      <div class="card rv">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a4de02" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 4v16"/></svg>
         <h3>Facile</h3>
         <p>Une disposition inspirée des grandes consoles : inserts, départs et entrées-sorties directement dans l'en-tête de chaque piste. Modes SHUFFLE, SPOT, SLIP et GRID, horloges Début / Fin / Longueur. Interface entièrement en français.</p>
       </div>
-      <div class="card">
+      <div class="card rv">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a4de02" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16"/><path d="M12 4v16"/><path d="M18 4v16"/><rect x="4" y="9" width="4" height="4" rx="1" fill="#a4de02"/><rect x="10" y="13" width="4" height="4" rx="1" fill="#a4de02"/><rect x="16" y="6" width="4" height="4" rx="1" fill="#a4de02"/></svg>
         <h3>Mixer</h3>
         <p>Une tranche par piste, bus et retours, gel des pistes en un raccourci. Vos instruments et effets VST3, VST2 et CLAP, repérés automatiquement et hébergés dans un processus séparé. Pilotes ASIO pour une latence minimale.</p>
       </div>
-      <div class="card">
+      <div class="card rv">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a4de02" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l4-6 4 3 4-8 6 9"/><path d="M3 21h18"/></svg>
         <h3>Masteriser</h3>
-        <p>Les treize plugins Mastersuite sont inclus : égaliseur MasterQ, compresseur MasterComp 76, limiteur true-peak MasterL, restauration MasterClean, assistant de mastering MasterFlem, réverbe MasteRev, délai MasterDelay, accordeur MasterTune, ampli MasterBend, et quatre instruments : batterie MasterDrum, piano MasterKeys, cordes MasterString et basse MasterBass.</p>
+        <p>Les dix plugins Mastersuite sont inclus : égaliseur MasterQ, compresseur MasterComp 76, limiteur true-peak MasterL, restauration MasterClean, assistant de mastering MasterFlem, réverbe MasteRev, délai MasterDelay, accordeur MasterTune, et deux instruments : piano MasterKeys et basse MasterBass.</p>
       </div>
     </div>
   </section>
 
   <section id="console" class="two">
-    <div class="shot"><img src="mixer.jpg" alt="Console de mixage de MasterMix" width="1200" height="645" loading="lazy"></div>
-    <div class="copy">
+    <div class="shot rv"><img src="mixer.jpg" alt="Console de mixage de MasterMix" width="1200" height="645" loading="lazy"></div>
+    <div class="copy rv">
       <div class="kicker">La console</div>
       <h2>Une tranche par piste, tout sous les yeux.</h2>
       <p>Inserts, départs, panoramique, fader et vumètre alignés sur chaque tranche. Les instruments multi-sorties tiennent sur une seule tranche, ou une par sortie si vous le demandez. Le master reste à droite, toujours visible.</p>
       <div class="list">
         <div>Bus, retours et départs auxiliaires</div>
         <div>Gel des pistes gourmandes, rendu audible immédiatement</div>
-        <div>Mastersuite : treize plugins inclus, effets, accordeur, ampli et instruments</div>
+        <div>Mastersuite : dix plugins inclus, effets, accordeur et instruments</div>
       </div>
     </div>
   </section>
 
   <section id="plugins">
-    <div class="section-head">
+    <div class="section-head rv">
       <div class="kicker">Mastersuite</div>
-      <h2>Treize plugins inclus, du premier accord au master.</h2>
+      <h2>Dix plugins inclus, du premier accord au master.</h2>
       <p class="sub">Tous en VST3, habillage MasterMix, installés avec la station. Ils fonctionnent aussi dans tout autre hôte VST3 64 bits.</p>
+    </div>
+    <div class="scene" aria-hidden="true">
+      <div class="anneau" style="--n:10">
+      <figure class="carte3d" style="--i:0"><img src="plugins/masterq.jpg" alt="" loading="lazy"><figcaption>MasterQ</figcaption></figure>
+      <figure class="carte3d" style="--i:1"><img src="plugins/mastercomp76.jpg" alt="" loading="lazy"><figcaption>MasterComp 76</figcaption></figure>
+      <figure class="carte3d" style="--i:2"><img src="plugins/masterl.jpg" alt="" loading="lazy"><figcaption>MasterL</figcaption></figure>
+      <figure class="carte3d" style="--i:3"><img src="plugins/masterclean.jpg" alt="" loading="lazy"><figcaption>MasterClean</figcaption></figure>
+      <figure class="carte3d" style="--i:4"><img src="plugins/masterflem.jpg" alt="" loading="lazy"><figcaption>MasterFlem</figcaption></figure>
+      <figure class="carte3d" style="--i:5"><img src="plugins/masterev.jpg" alt="" loading="lazy"><figcaption>MasteRev</figcaption></figure>
+      <figure class="carte3d" style="--i:6"><img src="plugins/masterdelay.jpg" alt="" loading="lazy"><figcaption>MasterDelay</figcaption></figure>
+      <figure class="carte3d" style="--i:7"><img src="plugins/mastertune.jpg" alt="" loading="lazy"><figcaption>MasterTune</figcaption></figure>
+      <figure class="carte3d" style="--i:8"><img src="plugins/masterkeys.jpg" alt="" loading="lazy"><figcaption>MasterKeys</figcaption></figure>
+      <figure class="carte3d" style="--i:9"><img src="plugins/masterbass.jpg" alt="" loading="lazy"><figcaption>MasterBass</figcaption></figure>
+      </div>
     </div>
     <div class="plugs">
       <div class="plug"><div class="shot"><img src="plugins/masterq.jpg" alt="MasterQ" loading="lazy"></div><h3>MasterQ<span>Égaliseur</span></h3><p>Égaliseur paramétrique 16 bandes : courbe interactive à la souris, analyseur de spectre en temps réel, cloches, plateaux, coupe-bas et coupe-haut. Pour sculpter une piste ou corriger un master.</p></div>
@@ -194,18 +276,15 @@ footer p{margin:0;max-width:980px;text-wrap:pretty}
       <div class="plug"><div class="shot"><img src="plugins/masterev.jpg" alt="MasteRev" loading="lazy"></div><h3>MasteRev<span>Réverbe</span></h3><p>Réverbe algorithmique à réseau de huit lignes : taille, pré-délai, amortissement, largeur, mix. Douze préconfigurations voix et instruments qui sonnent juste dès le choix, en insert ou sur un bus.</p></div>
       <div class="plug"><div class="shot"><img src="plugins/masterdelay.jpg" alt="MasterDelay" loading="lazy"></div><h3>MasterDelay<span>Délai</span></h3><p>Délai stéréo synchronisé au tempo ou libre, ping-pong, retour filtré et saturé en douceur, modulation type bande. Douze préconfigurations : slapback, doublage, écho pointé, dub.</p></div>
       <div class="plug"><div class="shot"><img src="plugins/mastertune.jpg" alt="MasterTune" loading="lazy"></div><h3>MasterTune<span>Accordeur</span></h3><p>Accordeur chromatique à poser sur la piste : note, écart en cents sur une aiguille, fréquence mesurée, La de référence réglable, notation C D E ou Do Ré Mi, sortie muette pendant l'accordage. Précis au cent.</p></div>
-      <div class="plug"><div class="shot"><img src="plugins/masterbend.jpg" alt="MasterBend" loading="lazy"></div><h3>MasterBend<span>Ampli</span></h3><p>Simulation d'ampli guitare et basse à brancher sur une piste DI : cinq modèles (clean US, crunch UK, lead, boutique, basse), quatre baffles (ou aucun, pour une réponse impulsionnelle externe), égalisation basses / médiums / aigus / présence, porte de bruit. Dix préréglages.</p></div>
-      <div class="plug"><div class="shot"><img src="plugins/masterdrum.jpg" alt="MasterDrum" loading="lazy"></div><h3>MasterDrum<span>Batterie</span></h3><p>Batterie à échantillons : kit dessiné en 3D qui s'allume à chaque coup, patterns MIDI joués au tempo de la session, morceau enchaîné section par section, micros proche / overheads / room. Glissez le morceau vers une piste de MasterMix. Vos WAV ou SFZ, ou les sons internes.</p></div>
       <div class="plug"><div class="shot"><img src="plugins/masterkeys.jpg" alt="MasterKeys" loading="lazy"></div><h3>MasterKeys<span>Piano</span></h3><p>Piano à échantillons : le Salamander Grand Piano (Yamaha C5, 16 couches de vélocité, Alexander Holm, CC-BY 3.0) inclus dans l'installeur. Grille d'accords : tonalité, « 4 accords » par style, suggestions, accompagnement calé sur la lecture et glissé en MIDI.</p></div>
-      <div class="plug"><div class="shot"><img src="plugins/masterstring.jpg" alt="MasterString" loading="lazy"></div><h3>MasterString<span>Violon et violoncelle</span></h3><p>Violon et violoncelle : six articulations par keyswitches (arco, pizzicato, staccato, trémolo, sourdine, col legno), legato et portamento en mode MONO, manches affichés. Grille d'accords partagée avec MasterKeys et MasterBass. Vos WAV ou SFZ, ou les sons internes.</p></div>
       <div class="plug"><div class="shot"><img src="plugins/masterbass.jpg" alt="MasterBass" loading="lazy"></div><h3>MasterBass<span>Basse</span></h3><p>Basse à échantillons : les deux basses cinq cordes Black And Blue (Karoryfer Samples, CC0) incluses dans l'installeur, huit articulations par keyswitches (doigt, médiator, étouffé, slap, pop, harmonique, ghost, glissé), manche, legato et portamento, accompagnement qui suit la grille d'accords. Vos WAV ou SFZ en priorité.</p></div>
     </div>
   </section>
 
-  <div id="telecharger" class="download">
+  <div id="telecharger" class="download rv">
     <div class="copy">
       <h2>Télécharger MasterMix 2.19</h2>
-      <p>Installeur pour Windows 10 et 11, 64 bits, avec les treize plugins VST3 Mastersuite et, au choix, les banques de sons embarquées : le piano Salamander pour MasterKeys et les basses Black And Blue pour MasterBass. Aucun téléchargement pendant l'installation. Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite. Sans compte ni abonnement ; MasterMix vous propose lui-même les mises à jour suivantes.</p>
+      <p>Installeur pour Windows 10 et 11, 64 bits, avec les dix plugins VST3 Mastersuite et, au choix, les banques de sons embarquées : le piano Salamander pour MasterKeys et les basses Black And Blue pour MasterBass. Aucun téléchargement pendant l'installation. Licence à vie offerte aux 100 premiers utilisateurs, 10 € ensuite. Sans compte ni abonnement ; MasterMix vous propose lui-même les mises à jour suivantes.</p>
       <a class="btn" href="telechargements/MasterMix-2.19-Setup-x64.exe">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="M6 11l6 6 6-6"/><path d="M4 21h16"/></svg>
         MasterMix-2.19-Setup-x64.exe · 1225 Mo
@@ -219,11 +298,11 @@ footer p{margin:0;max-width:980px;text-wrap:pretty}
   </div>
 
   <section id="configuration" class="config">
-    <div class="copy">
+    <div class="copy rv">
       <h2>Configuration requise</h2>
       <p>Un PC récent suffit. Une interface audio avec pilote ASIO donne le meilleur résultat.</p>
     </div>
-    <div class="spec">
+    <div class="spec rv">
       <div><span>Système</span><span>Windows 10 ou 11, 64 bits</span></div>
       <div><span>Processeur</span><span>x86-64, 4 cœurs recommandés</span></div>
       <div><span>Mémoire</span><span>8 Go recommandés</span></div>
@@ -241,5 +320,162 @@ footer p{margin:0;max-width:980px;text-wrap:pretty}
   </div>
   <p>Logiciel propriétaire, © 2026 Ahmed Hadjadj, tous droits réservés. MasterMix 2 est construit sur Futureboard Studio, © 2026 Ariz Kamizuki, sous licence MIT, sans affiliation avec ce projet. ASIO et VST sont des marques de Steinberg Media Technologies GmbH.</p>
 </div></footer>
+<script>
+(function(){
+  var d = document, reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  d.documentElement.classList.add('js');
+
+  /* Titre : une lettre après l'autre (le texte complet reste lisible par les lecteurs d'écran). */
+  var h1 = d.querySelector('.hero h1');
+  if (h1 && !reduit) {
+    var texte = h1.textContent.trim(), i = 0;
+    h1.setAttribute('aria-label', texte);
+    h1.textContent = '';
+    texte.split(/\s+/).forEach(function(mot, k){
+      var m = d.createElement('span');
+      m.className = 'mot'; m.setAttribute('aria-hidden', 'true');
+      Array.from(mot).forEach(function(ch){
+        var s = d.createElement('span');
+        s.className = 'l'; s.style.setProperty('--i', i++);
+        s.textContent = ch;
+        m.appendChild(s);
+      });
+      if (k) h1.appendChild(d.createTextNode(' '));
+      h1.appendChild(m);
+    });
+  }
+
+  /* Révélations au défilement, une seule fois. */
+  var rv = [].slice.call(d.querySelectorAll('.rv'));
+  if (reduit || !('IntersectionObserver' in window)) {
+    rv.forEach(function(e){ e.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entrees){
+      entrees.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {rootMargin: '0px 0px -8% 0px', threshold: .1});
+    rv.forEach(function(e){ io.observe(e); });
+  }
+
+  /* Chiffres qui comptent jusqu'à leur valeur à l'entrée dans l'écran. */
+  function compter(b){
+    var brut = b.getAttribute('data-valeur') || b.textContent, m = brut.match(/^(\d+)(?:[,.](\d+))?$/);
+    if (!m) return;
+    var dec = (m[2] || '').length, fin = parseFloat(brut.replace(',', '.')), t0 = null, duree = 1300;
+    function pas(ts){
+      if (t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / duree); p = 1 - Math.pow(1 - p, 3);
+      b.textContent = p < 1 ? (fin * p).toFixed(dec).replace('.', ',') : brut;
+      if (p < 1) requestAnimationFrame(pas);
+    }
+    requestAnimationFrame(pas);
+  }
+  var chiffres = d.querySelectorAll('.chiffre b');
+  if (chiffres.length && !reduit && 'IntersectionObserver' in window) {
+    var io2 = new IntersectionObserver(function(entrees){
+      entrees.forEach(function(e){ if (e.isIntersecting) { compter(e.target); io2.unobserve(e.target); } });
+    }, {threshold: .6});
+    chiffres.forEach(function(b){ io2.observe(b); });
+  }
+
+  /* En-tête compact et léger parallaxe de la console. */
+  var entete = d.querySelector('header'), console_ = d.querySelector('#console .shot'), prevu = false;
+  function maj(){
+    prevu = false;
+    entete.classList.toggle('compact', scrollY > 40);
+    if (console_ && !reduit) {
+      var r = console_.getBoundingClientRect(), c = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+      console_.style.setProperty('--py', (-c * 26).toFixed(1));
+    }
+  }
+  addEventListener('scroll', function(){ if (!prevu) { prevu = true; requestAnimationFrame(maj); } }, {passive: true});
+  maj();
+
+  /* Capture d'accueil : suit le pointeur une fois entrée (souris seulement). */
+  var heroShot = d.querySelector('.hero-shot .shot');
+  if (heroShot && !reduit && matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    var zone = d.querySelector('.hero-shot'), rx = 0, ry = 0, lum = 0, cibleRx = 0, cibleRy = 0, cibleLum = 0, anim = false;
+    function lisse(){
+      rx += (cibleRx - rx) * .12; ry += (cibleRy - ry) * .12; lum += (cibleLum - lum) * .12;
+      heroShot.style.setProperty('--rx', rx.toFixed(2)); heroShot.style.setProperty('--ry', ry.toFixed(2)); heroShot.style.setProperty('--lum', lum.toFixed(3));
+      if (Math.abs(cibleRx - rx) + Math.abs(cibleRy - ry) > .01) requestAnimationFrame(lisse); else anim = false;
+    }
+    function vise(){ if (!anim) { anim = true; requestAnimationFrame(lisse); } }
+    heroShot.addEventListener('animationend', function(){ heroShot.classList.add('suit'); }, {once: true});
+    zone.addEventListener('pointermove', function(ev){
+      if (!heroShot.classList.contains('suit')) return;
+      var r = heroShot.getBoundingClientRect(), px = (ev.clientX - r.left) / r.width - .5, py = (ev.clientY - r.top) / r.height - .5;
+      cibleRy = px * 8; cibleRx = -py * 6; cibleLum = Math.max(0, .5 - Math.abs(px)); vise();
+    });
+    zone.addEventListener('pointerleave', function(){ cibleRx = 0; cibleRy = 0; cibleLum = 0; vise(); });
+  }
+
+  /* Anneau 3D des plugins : rotation pilotée par le défilement, dérive lente au repos. */
+  var scene = d.querySelector('.scene'), anneau = d.querySelector('.anneau');
+  if (scene && anneau && !reduit) {
+    var cartes = [].slice.call(anneau.querySelectorAll('.carte3d')), n = cartes.length || 1, rot = 0, derive = 0, visible = false, t1 = null;
+    function poseAnneau(){
+      anneau.style.setProperty('--rot', rot.toFixed(2));
+      cartes.forEach(function(c, i){
+        var a = ((i * 360 / n + rot) % 360 + 360) % 360, face = (Math.cos(a * Math.PI / 180) + 1) / 2;   /* 1 devant, 0 derrière */
+        c.style.setProperty('--face', face.toFixed(3));
+      });
+    }
+    function tourne(ts){
+      if (!visible) { t1 = null; return; }
+      if (t1 !== null) derive += (ts - t1) * .0025;
+      t1 = ts;
+      var r = scene.getBoundingClientRect(), p = (innerHeight - r.top) / (innerHeight + r.height);
+      rot = -p * 240 - derive;
+      poseAnneau();
+      requestAnimationFrame(tourne);
+    }
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){ var avant = visible; visible = e.isIntersecting; if (visible && !avant) requestAnimationFrame(tourne); });
+    }, {rootMargin: '10% 0px'}).observe(scene);
+    poseAnneau();
+  }
+
+  /* Fond du hero : formes d'onde dessinées par le GPU (WebGL 1, shader minimal), seulement quand le hero est visible. */
+  var toile = d.querySelector('canvas.onde');
+  var gl = toile && !reduit ? (toile.getContext('webgl', {alpha: true, antialias: false, powerPreference: 'low-power'}) || toile.getContext('experimental-webgl')) : null;
+  if (gl) {
+    var vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+    var fs = 'precision mediump float;uniform vec2 r;uniform float t;' +
+      'float onde(vec2 u,float f,float a,float ph,float v){float y=.5+a*sin(u.x*f+t*v+ph)*sin(u.x*1.7+t*.21+ph*.5);float d=abs(u.y-y)*r.y/r.x;return exp(-d*d*120000.)*.8+exp(-d*220.)*.05;}' +
+      'void main(){vec2 u=gl_FragCoord.xy/r;float s=onde(u,6.,.07,0.,.5)+onde(u,9.5,.045,2.1,-.37)+onde(u,4.2,.1,4.,.28)*.7+onde(u,13.,.03,1.3,.61)*.5;' +
+      'float v=smoothstep(0.,.2,u.x)*smoothstep(1.,.8,u.x)*smoothstep(.12,.4,u.y)*smoothstep(.98,.72,u.y);' +
+      'vec3 c=vec3(.643,.871,.008)*s*v*.42;gl_FragColor=vec4(c,s*v*.42);}';
+    function shader(type, src){ var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; }
+    var sv = shader(gl.VERTEX_SHADER, vs), sf = shader(gl.FRAGMENT_SHADER, fs), prog = sv && sf ? gl.createProgram() : null;
+    if (prog) {
+      gl.attachShader(prog, sv); gl.attachShader(prog, sf); gl.linkProgram(prog); gl.useProgram(prog);
+      var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      var ap = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(ap); gl.vertexAttribPointer(ap, 2, gl.FLOAT, false, 0, 0);
+      var ur = gl.getUniformLocation(prog, 'r'), ut = gl.getUniformLocation(prog, 't');
+      gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      var heroVisible = true, debut = null, dpr = Math.min(devicePixelRatio || 1, 1.5);
+      function taille(){
+        var w = Math.floor(toile.clientWidth * dpr * .6), h = Math.floor(toile.clientHeight * dpr * .6);   /* 60 % : les ondes sont floues par nature */
+        if (toile.width !== w || toile.height !== h) { toile.width = w; toile.height = h; gl.viewport(0, 0, w, h); }
+      }
+      function dessine(ts){
+        if (!heroVisible || d.hidden) { debut = null; return; }
+        if (debut === null) debut = ts;
+        taille();
+        gl.uniform2f(ur, toile.width, toile.height); gl.uniform1f(ut, (ts - debut) / 1000);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        requestAnimationFrame(dessine);
+      }
+      new IntersectionObserver(function(es){
+        es.forEach(function(e){ var avant = heroVisible; heroVisible = e.isIntersecting; if (heroVisible && !avant) requestAnimationFrame(dessine); });
+      }).observe(toile);
+      d.addEventListener('visibilitychange', function(){ if (!d.hidden && heroVisible) requestAnimationFrame(dessine); });
+      toile.classList.add('pret');
+      requestAnimationFrame(dessine);
+    }
+  }
+})();
+</script>
 </body>
 </html>
